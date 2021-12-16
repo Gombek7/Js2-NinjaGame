@@ -8,17 +8,7 @@ export default class MainScene extends Phaser.Scene {
     constructor() {
         super({ key: 'MainScene' })
     }
-    preload() {
-        this.load.baseURL = 'https://examples.phaser.io/assets/';
-        this.load.crossOrigin = 'anonymous';
-        this.load.image('background', 'games/starstruck/background.png');
-        this.load.image('platform', 'sprites/block.png');
-  
-        this.load.spritesheet('player', 'games/starstruck/dude.png',
-            { frameWidth: 32, frameHeight: 48 }
-        );
-    }
-
+    
     create() {
         this.fpsText = new FpsText(this);
 
