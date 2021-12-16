@@ -11,23 +11,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 		scene.cameras.main.startFollow(this);
 
 		scene.anims.create({
-			key: 'left',
-			frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
+			key: 'run',
+			frames: this.anims.generateFrameNumbers('player', { start: 3, end: 6}),
 			frameRate: 10,
 			repeat: -1
 		});
 
 		scene.anims.create({
 			key: 'front',
-			frames: [{ key: 'player', frame: 4 }],
-			frameRate: 20
-		});
-
-		scene.anims.create({
-			key: 'right',
-			frames: this.anims.generateFrameNumbers('player', { start: 5, end: 8 }),
-			frameRate: 10,
-			repeat: -1
+			frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3}),
+			frameRate: 5,
+			repeat: 1
 		});
 
 		this.cursors = scene.input.keyboard.createCursorKeys();
@@ -36,11 +30,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 	update() {
 		if (this.cursors.left.isDown) {
 			this.setVelocityX(-150);
-			this.anims.play('left', true);
+			this.anims.play('run', true);
+			this.flipX = true;
 		}
 		else if (this.cursors.right.isDown) {
 			this.setVelocityX(150);
-			this.anims.play('right', true);
+			this.anims.play('run', true);
+			this.flipX = false;
 		}
 		else {
 			this.setVelocityX(0);
