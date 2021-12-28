@@ -1,13 +1,17 @@
 export default class Player extends Phaser.Physics.Arcade.Sprite {
 	cursors;
-
+	#speed = 300;
+	#jumpSpeed = 400;
+	#mass = 1;
 	constructor(scene: Phaser.Scene, x, y) {
 		super(scene, x, y, 'player');
 		scene.add.existing(this);
 		scene.physics.add.existing(this);
+		this.body.setSize(this.body.width*0.6, this.body.height*0.85); //set smaller hitbox
+		this.body.setMass(100);
 
 		this.setCollideWorldBounds(true);
-		this.setBounce(0.2);
+		//this.setBounce(0.2);
 		scene.cameras.main.startFollow(this);
 
 		scene.anims.create({
@@ -29,12 +33,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
 	update() {
 		if (this.cursors.left.isDown) {
-			this.setVelocityX(-150);
+			this.setVelocityX(-this.#speed);
 			this.anims.play('run', true);
 			this.flipX = true;
 		}
 		else if (this.cursors.right.isDown) {
-			this.setVelocityX(150);
+			this.setVelocityX(this.#speed);
 			this.anims.play('run', true);
 			this.flipX = false;
 		}
@@ -45,7 +49,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
 		const body = this.body as Phaser.Physics.Arcade.Body; //typescript hack for onFloor() function
 		if (this.cursors.up.isDown && (body.touching.down || body.onFloor())) {
-			this.setVelocityY(-250);
+			this.setVelocityY(-this.#jumpSpeed);
 		}
 	}
 }

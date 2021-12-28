@@ -1,10 +1,9 @@
 import 'phaser'
+import { DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_GRAVITY } from './constants'
 import ExampleScene from './scenes/exampleScene'
 import MainScene from './scenes/mainScene'
 import PreloadScene from './scenes/preloadScene'
 
-const DEFAULT_WIDTH = 500
-const DEFAULT_HEIGHT = 300
 
 const config = {
   type: Phaser.AUTO,
@@ -21,7 +20,7 @@ const config = {
     default: 'arcade',
     arcade: {
       debug: false,
-      gravity: { y: 500 }
+      gravity: { y: DEFAULT_GRAVITY }
     }
   }
 }
