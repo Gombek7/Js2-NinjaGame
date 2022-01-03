@@ -25,17 +25,32 @@
     <link rel="apple-touch-icon" type="image/png" sizes="512x512" href="./icons/icons-512.png" />
 
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
-
-    <title><%= htmlWebpackPlugin.options.gameName %></title>
     <style>
-      html,
       body {
-        height: 100%;
+        background-color: #7a6991;
         margin: 0;
-        background-color: #000000;
+        padding: 0;
+      }
+
+      .center {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .title {
+        font-family: 'Roboto', sans-serif;
+        margin: 28px 0;
+        color: white;
+        letter-spacing: 3px;
+      }
+      .game {
+        border-radius: 12px;
+        overflow: hidden;
       }
     </style>
-
+    <title>JS NINJA</title>
     <noscript>Please enable javascript to continue using this application.</noscript>
 
     <!-- installs the serviceWorker -->
@@ -48,6 +63,9 @@
     </script> -->
   </head>
   <body>
-    <div id="phaser-game"></div>
+    <div class="center">
+      <h1 class="title">__NINJA__JS__</h1>
+      <div id="phaser-game" class="game"></div>
+    </div>
   </body>
 </html>

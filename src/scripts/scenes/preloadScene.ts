@@ -6,7 +6,6 @@ export default class PreloadScene extends Phaser.Scene {
   preload() {
     //images
     this.load.image('background', 'assets/img/background.jpg');
-    this.load.image('phaser-logo', 'assets/img/phaser-logo.png')
 
     //sprites
     this.load.image('platform', 'assets/sprites/block.png');
@@ -20,13 +19,17 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.spritesheet('player_attacks', 'assets/spritesheets/ninja_attacks.png',
         { frameWidth: 180, frameHeight: 120 }
     );
-
-
+    this.load.spritesheet('boom', 'assets/spritesheets/boom.png',
+        { frameWidth: 105, frameHeight: 98 }
+    );
+    // this.load.spritesheet('enemy','assets/spritesheets/enemy.png', { frameWidth: 105, frameHeight: 98 } )
+    this.load.spritesheet('fireball', 'assets/spritesheets/fireball.png',
+        { frameWidth: 109, frameHeight: 48 }
+    );
   }
 
   create() {
-    //this.scene.start('ExampleScene')
-    this.scene.start('MainScene');
+    this.scene.start('MainScene')
 
     /**
      * This is how you would dynamically import the mainScene class (with code splitting),
