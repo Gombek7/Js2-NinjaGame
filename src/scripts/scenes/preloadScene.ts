@@ -4,15 +4,24 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   preload() {
+    //images
     this.load.image('background', 'assets/img/background.jpg');
+    this.load.image('phaser-logo', 'assets/img/phaser-logo.png')
+
+    //sprites
     this.load.image('platform', 'assets/sprites/block.png');
+    this.load.image('hearth', 'assets/sprites/hearth.png');
+    this.load.image('empty_hearth', 'assets/sprites/empty_hearth.png');
+
+    //spritessheets
     this.load.spritesheet('player', 'assets/spritesheets/ninja.png',
         { frameWidth: 120, frameHeight: 120 }
     );
     this.load.spritesheet('player_attacks', 'assets/spritesheets/ninja_attacks.png',
         { frameWidth: 180, frameHeight: 120 }
     );
-    this.load.image('phaser-logo', 'assets/img/phaser-logo.png')
+
+
   }
 
   create() {

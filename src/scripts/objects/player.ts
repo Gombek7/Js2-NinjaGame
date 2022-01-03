@@ -1,4 +1,6 @@
-export default class Player extends Phaser.Physics.Arcade.Sprite {
+import HittableObject from "./HittableObject";
+
+export default class Player extends HittableObject {
 	isAttacking: boolean;
 
 	#cursors;
@@ -7,11 +9,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 	#mass = 1;
 	constructor(scene: Phaser.Scene, x, y) {
 		super(scene, x, y, 'player');
-		scene.add.existing(this);
-		scene.physics.add.existing(this);
 		this.body.setSize(this.body.width*0.6, this.body.height*0.85); //set smaller hitbox
 		this.body.setMass(100);
-
 		this.setCollideWorldBounds(true);
 		//this.setBounce(0.2);
 		scene.cameras.main.startFollow(this);
@@ -37,9 +36,22 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 		  });
 
 		this.#cursors = scene.input.keyboard.createCursorKeys();
+
+		//Hp config
+		this.MaxHP = 10;
+		this.CurrentHP = 7;
+
+		//test hits
+		/*
+		setInterval(()=>
+		{
+			this.Hit(1);
+		},1000);
+		*/
 	}
 
 	update() {
+		super.update();
 		if (this.#cursors.left.isDown) {
 			this.setVelocityX(-this.#speed);
 			this.anims.play('run', true);
