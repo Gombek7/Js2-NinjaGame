@@ -1,5 +1,7 @@
 export default class Player extends Phaser.Physics.Arcade.Sprite {
-	cursors;
+	isAttacking: boolean;
+
+	#cursors;
 	#speed = 300;
 	#jumpSpeed = 400;
 	#mass = 1;
@@ -28,19 +30,28 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 			repeat: 1
 		});
 
-		this.cursors = scene.input.keyboard.createCursorKeys();
+		scene.anims.create({
+			key: 'attack',
+			frames: this.anims.generateFrameNumbers('player_attacks', { start: 0, end: 3 }),
+			frameRate: 10
+		  });
+
+		this.#cursors = scene.input.keyboard.createCursorKeys();
 	}
 
 	update() {
-		if (this.cursors.left.isDown) {
+		if (this.#cursors.left.isDown) {
 			this.setVelocityX(-this.#speed);
 			this.anims.play('run', true);
 			this.flipX = true;
 		}
-		else if (this.cursors.right.isDown) {
+		else if (this.#cursors.right.isDown) {
 			this.setVelocityX(this.#speed);
 			this.anims.play('run', true);
 			this.flipX = false;
+		}
+		else if (this.#cursors.space.isDown) {
+			this.anims.play('attack', true);
 		}
 		else {
 			this.setVelocityX(0);
@@ -48,7 +59,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 		}
 
 		const body = this.body as Phaser.Physics.Arcade.Body; //typescript hack for onFloor() function
-		if (this.cursors.up.isDown && (body.touching.down || body.onFloor())) {
+		if (this.#cursors.up.isDown && (body.touching.down || body.onFloor())) {
 			this.setVelocityY(-this.#jumpSpeed);
 		}
 	}
