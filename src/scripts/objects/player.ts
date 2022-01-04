@@ -1,3 +1,4 @@
+import Explosion from "./Explosion";
 import HearthsUI from "./HearthsUI";
 import HittableObject from "./HittableObject";
 

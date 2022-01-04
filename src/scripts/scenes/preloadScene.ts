@@ -26,6 +26,9 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.spritesheet('fireball', 'assets/spritesheets/fireball.png',
         { frameWidth: 109, frameHeight: 48 }
     );
+    this.load.spritesheet('explosion', 'assets/spritesheets/boom.png',
+        { frameWidth: 103, frameHeight: 103 }
+    );
   }
 
   create() {
