@@ -125,4 +125,5 @@ export default class Player extends HittableObject {
 		  yoyo: true
 		});
   }
+
 }
