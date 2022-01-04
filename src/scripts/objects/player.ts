@@ -20,7 +20,6 @@ export default class Player extends HittableObject {
     this.body.setMass(100)
     this.setGravityY(500)
     this.setCollideWorldBounds(true)
-    //this.setBounce(0.2);
     scene.cameras.main.startFollow(this)
 
     this.isInvulnerable = false
@@ -109,5 +108,4 @@ export default class Player extends HittableObject {
       yoyo: true
     })
   }
-
 }

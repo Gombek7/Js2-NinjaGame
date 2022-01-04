@@ -1,5 +1,3 @@
-import { DEFAULT_GRAVITY } from '../constants'
-
 export default class Fireball extends Phaser.Physics.Arcade.Sprite {
   constructor(scene: Phaser.Scene, x, y) {
     super(scene, x, y, 'fireball')

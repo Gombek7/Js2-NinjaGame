@@ -8,6 +8,7 @@ export default class EnemyWithSword extends HittableObject {
     this.setDisplaySize(150, 150)
     this.setGravityY(500)
     this.setCollideWorldBounds(true)
+
     this.flipX = true
     scene.anims.create({
       key: 'stay',
