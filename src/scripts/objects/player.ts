@@ -1,12 +1,15 @@
+import HearthsUI from "./HearthsUI";
 import HittableObject from "./HittableObject";
 
 export default class Player extends HittableObject {
 	isAttacking: boolean;
 
+	#hearthsUI: HearthsUI;
 	#cursors;
 	#speed = 300;
 	#jumpSpeed = 400;
 	#mass = 1;
+
 	constructor(scene: Phaser.Scene, x, y) {
 		super(scene, x, y, 'player');
 		this.body.setSize(this.body.width * 0.6, this.body.height * 0.85); //set smaller hitbox
@@ -15,32 +18,33 @@ export default class Player extends HittableObject {
 		//this.setBounce(0.2);
 		scene.cameras.main.startFollow(this);
 
-    scene.anims.create({
-      key: 'run',
-      frames: this.anims.generateFrameNumbers('player', { start: 3, end: 6 }),
-      frameRate: 10,
-      repeat: -1
-    })
+		scene.anims.create({
+		key: 'run',
+		frames: this.anims.generateFrameNumbers('player', { start: 3, end: 6 }),
+		frameRate: 10,
+		repeat: -1
+		})
 
-    scene.anims.create({
-      key: 'front',
-      frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
-      frameRate: 5,
-      repeat: 1
-    })
+		scene.anims.create({
+		key: 'front',
+		frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
+		frameRate: 5,
+		repeat: 1
+		})
 
-    scene.anims.create({
-      key: 'attack',
-      frames: this.anims.generateFrameNumbers('player_attacks', { start: 0, end: 3 }),
-      frameRate: 10
-    })
+		scene.anims.create({
+		key: 'attack',
+		frames: this.anims.generateFrameNumbers('player_attacks', { start: 0, end: 3 }),
+		frameRate: 10
+		})
 
 		this.#cursors = scene.input.keyboard.createCursorKeys();
 
 		//Hp config
 		this.MaxHP = 10;
 		this.CurrentHP = 7;
-
+		this.#hearthsUI = new HearthsUI(this.scene);
+		this.#hearthsUI.update(this.CurrentHP, this.MaxHP);
 		//test hits
 		/*
 		setInterval(()=>
@@ -79,5 +83,11 @@ export default class Player extends HittableObject {
     if (this.#cursors.up.isDown && (body.touching.down || body.onFloor())) {
       this.setVelocityY(-this.#jumpSpeed)
     }
+  }
+
+  Hit(damage: number): void {
+	  super.Hit(damage);
+
+	  this.#hearthsUI.update(this.CurrentHP, this.MaxHP);
   }
 }

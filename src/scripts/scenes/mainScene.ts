@@ -2,6 +2,7 @@ import FpsText from '../objects/fpsText'
 import Player from '../objects/player'
 import { DEFAULT_WIDTH, DEFAULT_HEIGHT } from '../constants'
 import Fireball from '../objects/fireball'
+import HearthsUI from '../objects/HearthsUI'
 
 const platformsHeights = [130, 230, 330, 450]
 const platoformsWidth = [
@@ -25,7 +26,7 @@ export default class MainScene extends Phaser.Scene {
     background.setScrollFactor(0.6) //fixedToCamera = true;
     this.cameras.main.setBounds(0, 0, DEFAULT_WIDTH + 1840, DEFAULT_HEIGHT)
     this.physics.world.setBounds(0, 0, DEFAULT_WIDTH + 1840, DEFAULT_HEIGHT)
-
+    
     this.player = new Player(this, 50, 100)
     this.fireball = new Fireball(this, 100, 100).setGravity(0)
 
