@@ -3,6 +3,9 @@ import HittableObject from "./HittableObject";
 
 export default class Player extends HittableObject {
 	isAttacking: boolean;
+	isInvulnerable: boolean;
+	static INVULNERABLE_TIME = 500;
+	static INVULNERABLE_BLINKS = 3;
 
 	#hearthsUI: HearthsUI;
 	#cursors;
@@ -17,6 +20,8 @@ export default class Player extends HittableObject {
 		this.setCollideWorldBounds(true);
 		//this.setBounce(0.2);
 		scene.cameras.main.startFollow(this);
+
+		this.isInvulnerable = false;
 
 		scene.anims.create({
 		key: 'run',
@@ -42,7 +47,6 @@ export default class Player extends HittableObject {
 		this.isAttacking = false;
 
 		this.on('animationstart', (animation, frame)=>{
-			console.log(animation);
 			if(animation.key === 'attack')
 			{
 				this.isAttacking = true;
@@ -52,7 +56,7 @@ export default class Player extends HittableObject {
 		this.on('animationcomplete-attack', (animation, frame)=>{
 				this.isAttacking = false;
 		});
-
+		
 		this.#cursors = scene.input.keyboard.createCursorKeys();
 
 		//Hp config
@@ -65,7 +69,7 @@ export default class Player extends HittableObject {
 		setInterval(()=>
 		{
 			this.Hit(1);
-		},1000);
+		},2000);
 		*/
 	}
 
@@ -103,8 +107,20 @@ export default class Player extends HittableObject {
   }
 
   Hit(damage: number): void {
+	  if (this.isInvulnerable)
+	  	return;
 	  super.Hit(damage);
-
 	  this.#hearthsUI.update(this.CurrentHP, this.MaxHP);
+	  this.isInvulnerable = true;
+	  setTimeout(() => this.isInvulnerable = false, Player.INVULNERABLE_TIME);
+	  
+	  this.scene.tweens.add({
+		  targets: this,
+		  alpha: 0,
+		  ease: 'Cubic.easeOut',
+		  duration: Player.INVULNERABLE_TIME / (Player.INVULNERABLE_BLINKS * 2),
+		  repeat: Player.INVULNERABLE_BLINKS,
+		  yoyo: true
+		});
   }
 }
