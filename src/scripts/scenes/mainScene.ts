@@ -3,6 +3,8 @@ import Player from '../objects/player'
 import { DEFAULT_WIDTH, DEFAULT_HEIGHT } from '../constants'
 import Fireball from '../objects/fireball'
 import HearthsUI from '../objects/HearthsUI'
+import Explosion from '../objects/Explosion'
+import EnemyWithSword from '../objects/enemyWithSword'
 
 const platformsHeights = [130, 230, 330, 450]
 const platoformsWidth = [
@@ -13,8 +15,10 @@ const platoformsWidth = [
 export default class MainScene extends Phaser.Scene {
   fpsText
   player
+  enemyWithSword
   platforms
   fireball
+  boom
   constructor() {
     super({ key: 'MainScene' })
   }
@@ -26,9 +30,35 @@ export default class MainScene extends Phaser.Scene {
     background.setScrollFactor(0.6) //fixedToCamera = true;
     this.cameras.main.setBounds(0, 0, DEFAULT_WIDTH + 1840, DEFAULT_HEIGHT)
     this.physics.world.setBounds(0, 0, DEFAULT_WIDTH + 1840, DEFAULT_HEIGHT)
-    
+
     this.player = new Player(this, 50, 100)
-    this.fireball = new Fireball(this, 100, 100).setGravity(0)
+
+    this.fireball = []
+    for (let i = 0; i < 6; i++) {
+      this.fireball.push(
+        new Fireball(this, 1900, platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50)
+      )
+      this.physics.add.collider(this.player, this.fireball[i], () => {
+        this.boom = new Explosion(this, this.fireball[i].x, this.fireball[i].y)
+        this.fireball[i].coliderWithPlayer()
+        this.player.Hit()
+      })
+    }
+
+    this.enemyWithSword = []
+    for (let i = 0; i < 4; i++) {
+      this.enemyWithSword.push(
+        new EnemyWithSword(this, platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)], 0)
+      )
+      this.physics.add.collider(this.player, this.enemyWithSword[i], () => {
+        if (this.player.isAttacking) {
+          this.boom = new Explosion(this, this.enemyWithSword[i].x, this.enemyWithSword[i].y)
+          this.enemyWithSword[i].coliderWithPlayer()
+        } else {
+          this.player.Hit()
+        }
+      })
+    }
 
     this.platforms = this.physics.add.staticGroup()
     for (let i = 0; i < 30; i++) {
@@ -38,13 +68,14 @@ export default class MainScene extends Phaser.Scene {
         'platform'
       )
     }
+
     this.platforms.getChildren().forEach(c => c.setScale(0.8).setOrigin(0).refreshBody())
     this.physics.add.collider(this.player, this.platforms)
+    this.physics.add.collider(this.player, this.enemyWithSword)
   }
 
   update() {
     this.player.update()
     this.fpsText.update()
-    this.fireball.update()
   }
 }

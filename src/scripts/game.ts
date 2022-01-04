@@ -1,5 +1,5 @@
 import 'phaser'
-import { DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_GRAVITY } from './constants'
+import { DEFAULT_WIDTH, DEFAULT_HEIGHT } from './constants'
 import MainScene from './scenes/mainScene'
 import PreloadScene from './scenes/preloadScene'
 
@@ -17,8 +17,7 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
-      debug: false,
-      gravity: { y: DEFAULT_GRAVITY }
+      debug: false
     }
   }
 }
