@@ -15,8 +15,9 @@ export default class Player extends HittableObject {
 	#mass = 1;
 
 	constructor(scene: Phaser.Scene, x, y) {
-		super(scene, x, y, 'player');
-		this.body.setSize(this.body.width * 0.6, this.body.height * 0.85); //set smaller hitbox
+		super(scene, x, y, 'player_idle');
+		this.setDisplaySize(75,75);
+		//this.body.setSize(this.body.width * 0.6, this.body.height * 0.85); //set smaller hitbox
 		this.body.setMass(100);
 		this.setCollideWorldBounds(true);
 		//this.setBounce(0.2);
@@ -26,21 +27,21 @@ export default class Player extends HittableObject {
 
 		scene.anims.create({
 		key: 'run',
-		frames: this.anims.generateFrameNumbers('player', { start: 3, end: 6 }),
+		frames: this.anims.generateFrameNumbers('player_move', { start: 0, end: 11 }),
 		frameRate: 10,
 		repeat: 1
 		})
 
 		scene.anims.create({
-		key: 'front',
-		frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
+		key: 'idle',
+		frames: this.anims.generateFrameNumbers('player_idle', { start: 0, end: 5 }),
 		frameRate: 5,
-		repeat: 1
+		repeat: -1
 		})
-
+		//TODO: jump animation
 		scene.anims.create({
 		key: 'attack',
-		frames: this.anims.generateFrameNumbers('player_attacks', { start: 0, end: 3 }),
+		frames: this.anims.generateFrameNumbers('player_attack', { start: 0, end: 5 }),
 		frameRate: 10,
 		repeat: 0
 		})
@@ -98,7 +99,7 @@ export default class Player extends HittableObject {
 		}
 		else {
 			this.setVelocityX(0);
-			this.anims.play('front');
+			this.anims.play('idle', true);
 		}
 
     const body = this.body as Phaser.Physics.Arcade.Body //typescript hack for onFloor() function

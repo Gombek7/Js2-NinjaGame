@@ -13,10 +13,29 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.image('empty_hearth', 'assets/sprites/empty_hearth.png');
 
     //spritessheets
-    this.load.spritesheet('player', 'assets/spritesheets/ninja.png',
+    this.load.spritesheet('player_attack', 'assets/spritesheets/player_attack.png',
+        { frameWidth: 270, frameHeight: 200 }
+    );
+    this.load.spritesheet('player_fire', 'assets/spritesheets/player_fire.png',
+        { frameWidth: 200, frameHeight: 200 }
+    );
+    this.load.spritesheet('player_idle', 'assets/spritesheets/player_idle.png',
+    { frameWidth: 200, frameHeight: 200 }
+    );
+    this.load.spritesheet('player_jump_attack', 'assets/spritesheets/player_jump_attack.png',
+        { frameWidth: 270, frameHeight: 200 }
+    );
+    this.load.spritesheet('player_jump', 'assets/spritesheets/player_jump.png',
+        { frameWidth: 200, frameHeight: 200 }
+    );
+    this.load.spritesheet('player_move', 'assets/spritesheets/player_move.png',
+        { frameWidth: 200, frameHeight: 200 }
+    );
+
+    this.load.spritesheet('ninja', 'assets/spritesheets/ninja.png',
         { frameWidth: 120, frameHeight: 120 }
     );
-    this.load.spritesheet('player_attacks', 'assets/spritesheets/ninja_attacks.png',
+    this.load.spritesheet('ninja_attacks', 'assets/spritesheets/ninja_attacks.png',
         { frameWidth: 180, frameHeight: 120 }
     );
     this.load.spritesheet('boom', 'assets/spritesheets/boom.png',
