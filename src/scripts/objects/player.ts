@@ -22,7 +22,7 @@ export default class Player extends HittableObject {
 		key: 'run',
 		frames: this.anims.generateFrameNumbers('player', { start: 3, end: 6 }),
 		frameRate: 10,
-		repeat: -1
+		repeat: 1
 		})
 
 		scene.anims.create({
@@ -35,8 +35,23 @@ export default class Player extends HittableObject {
 		scene.anims.create({
 		key: 'attack',
 		frames: this.anims.generateFrameNumbers('player_attacks', { start: 0, end: 3 }),
-		frameRate: 10
+		frameRate: 10,
+		repeat: 0
 		})
+
+		this.isAttacking = false;
+
+		this.on('animationstart', (animation, frame)=>{
+			console.log(animation);
+			if(animation.key === 'attack')
+			{
+				this.isAttacking = true;
+			}
+		});
+		
+		this.on('animationcomplete-attack', (animation, frame)=>{
+				this.isAttacking = false;
+		});
 
 		this.#cursors = scene.input.keyboard.createCursorKeys();
 
@@ -56,7 +71,17 @@ export default class Player extends HittableObject {
 
 	update() {
 		super.update();
-		if (this.#cursors.left.isDown) {
+		if(this.isAttacking)
+		{
+			if (this.flipX)
+				this.setVelocityX(-this.#speed)
+			else
+				this.setVelocityX(this.#speed)
+		}
+		else if (this.#cursors.space.isDown) {
+			this.anims.play('attack', true);
+		}
+		else if (this.#cursors.left.isDown) {
 			this.setVelocityX(-this.#speed);
 			this.anims.play('run', true);
 			this.flipX = true;
@@ -65,14 +90,6 @@ export default class Player extends HittableObject {
 			this.setVelocityX(this.#speed);
 			this.anims.play('run', true);
 			this.flipX = false;
-		}
-		else if (this.#cursors.space.isDown) {
-			this.anims.play('attack', true)
-      if (this.flipX) {
-        this.setVelocityX(-this.#speed)
-      } else {
-        this.setVelocityX(this.#speed)
-      }
 		}
 		else {
 			this.setVelocityX(0);
