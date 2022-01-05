@@ -13,7 +13,8 @@ export default class Fireball extends Phaser.Physics.Arcade.Sprite {
     scene.anims.create({
       key: 'shot',
       frames: this.anims.generateFrameNumbers('fireball', { start: 0, end: 3 }),
-      frameRate: 10
+      frameRate: 10,
+      repeat: -1
     })
     this.anims.play('shot', true)
     this.setVelocityX(-200)
