@@ -31,7 +31,7 @@ export default class Player extends HittableObject {
       key: 'run',
       frames: this.anims.generateFrameNumbers('player_move', { start: 0, end: 10 }),
       frameRate: 10,
-      repeat: 1
+      repeat: 0
     })
 
     scene.anims.create({
@@ -51,8 +51,10 @@ export default class Player extends HittableObject {
     this.isAttacking = false
 
     this.on('animationstart', (animation, frame) => {
-      if (animation.key === 'attack') {
+      if (animation.key === 'attack' && !this.isAttacking) {
         this.isAttacking = true
+        //FIXME: super speed when holding space
+        this.setVelocityX(this.body.velocity.x + 0.5 * ((this.flipX) ? -this.#speed : this.#speed))
       }
     })
 
@@ -71,24 +73,24 @@ export default class Player extends HittableObject {
 
   update(time, delta) {
     super.update(time, delta)
-    if (this.isAttacking) {
-      if (this.flipX) this.setVelocityX(-this.#speed)
-      else this.setVelocityX(this.#speed)
-    } else if (this.#cursors.space.isDown) {
+    if (this.#cursors.space.isDown) {
       this.anims.play('attack', true)
     } else if (this.#cursors.left.isDown) {
       this.setVelocityX(-this.#speed)
-      this.anims.play('run', true)
+      if(!this.isAttacking)
+        this.anims.play('run', true)
       this.flipX = true
     } else if (this.#cursors.right.isDown) {
       this.setVelocityX(this.#speed)
-      this.anims.play('run', true)
+      if(!this.isAttacking)
+        this.anims.play('run', true)
       this.flipX = false
     } else {
       this.setVelocityX(this.body.velocity.x  * delta * Player.STOP_FACTOR);
       if(Math.abs(this.body.velocity.x) < Player.VELOCITY_TO_STOP)
         this.setVelocityX(0);
-      this.anims.play('idle', true)
+      if(!this.isAttacking)
+        this.anims.play('idle', true)
     }
     
     const body = this.body as Phaser.Physics.Arcade.Body //typescript hack for onFloor() function
