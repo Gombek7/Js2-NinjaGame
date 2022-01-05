@@ -1,3 +1,6 @@
+import Explosion from "./Explosion"
+import HittableObject from "./HittableObject"
+
 export default class Fireball extends Phaser.Physics.Arcade.Sprite {
   constructor(scene: Phaser.Scene, x, y) {
     super(scene, x, y, 'fireball')
@@ -14,9 +17,28 @@ export default class Fireball extends Phaser.Physics.Arcade.Sprite {
     })
     this.anims.play('shot', true)
     this.setVelocityX(-200)
+
+    this.body.onOverlap = true;
+    scene.physics.world.on(Phaser.Physics.Arcade.Events.OVERLAP, this.overlapHandler, this);
   }
 
-  coliderWithPlayer = () => {
-    this.destroy()
+  destroy(){
+    this.scene.physics.world.off(Phaser.Physics.Arcade.Events.OVERLAP, this.overlapHandler, this)
+    super.destroy();
   }
+
+  overlapHandler(fireball, object){
+    if(fireball != this)
+      return;
+    if(object instanceof(HittableObject))
+    {
+      object.Hit(1);
+      object.setVelocityX(-1000);
+    }
+    new Explosion(this.scene, this.x, this.y);
+
+    this.destroy();
+  };
+
+
 }

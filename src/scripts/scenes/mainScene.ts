@@ -38,11 +38,14 @@ export default class MainScene extends Phaser.Scene {
       this.fireball.push(
         new Fireball(this, 1900, platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50)
       )
+      this.physics.add.overlap(this.fireball[i], this.player);
+      /* Moved to class
       this.physics.add.collider(this.player, this.fireball[i], () => {
         this.boom = new Explosion(this, this.fireball[i].x, this.fireball[i].y)
         this.fireball[i].coliderWithPlayer()
-        this.player.Hit()
+        this.player.Hit(1)
       })
+      */
     }
 
     this.enemyWithSword = []
@@ -55,7 +58,7 @@ export default class MainScene extends Phaser.Scene {
           this.boom = new Explosion(this, this.enemyWithSword[i].x, this.enemyWithSword[i].y)
           this.enemyWithSword[i].coliderWithPlayer()
         } else {
-          this.player.Hit()
+          this.player.Hit(1)
         }
       })
     }
@@ -74,8 +77,8 @@ export default class MainScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.enemyWithSword)
   }
 
-  update() {
-    this.player.update()
+  update(time, delta) {
+    this.player.update(time, delta)
     this.fpsText.update()
   }
 }

@@ -88,8 +88,9 @@ export default class HittableObject extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    update() {
+    update(time, delta) {
         //FIXME: Glitching healthbar when moving with camera
+        super.update(time, delta);
         this.#healthBar.setPosition(this.x - this.width/4, this.y - this.height/4);
     }
 }

@@ -1,3 +1,4 @@
+import { Time } from 'phaser'
 import Explosion from './Explosion'
 import HearthsUI from './HearthsUI'
 import HittableObject from './HittableObject'
@@ -7,7 +8,8 @@ export default class Player extends HittableObject {
   isInvulnerable: boolean
   static INVULNERABLE_TIME = 500
   static INVULNERABLE_BLINKS = 3
-
+  static VELOCITY_TO_STOP = 20;
+  static STOP_FACTOR = 0.055;
   #hearthsUI: HearthsUI
   #cursors
   #speed = 300
@@ -18,6 +20,7 @@ export default class Player extends HittableObject {
     super(scene, x, y, 'player_idle')
     this.setDisplaySize(75, 75)
     this.body.setMass(100)
+    this.setFriction(0.5)
     this.setGravityY(500)
     this.setCollideWorldBounds(true)
     scene.cameras.main.startFollow(this)
@@ -66,8 +69,8 @@ export default class Player extends HittableObject {
     this.#hearthsUI.update(this.CurrentHP, this.MaxHP)
   }
 
-  update() {
-    super.update()
+  update(time, delta) {
+    super.update(time, delta)
     if (this.isAttacking) {
       if (this.flipX) this.setVelocityX(-this.#speed)
       else this.setVelocityX(this.#speed)
@@ -82,10 +85,12 @@ export default class Player extends HittableObject {
       this.anims.play('run', true)
       this.flipX = false
     } else {
-      this.setVelocityX(0)
+      this.setVelocityX(this.body.velocity.x  * delta * Player.STOP_FACTOR);
+      if(Math.abs(this.body.velocity.x) < Player.VELOCITY_TO_STOP)
+        this.setVelocityX(0);
       this.anims.play('idle', true)
     }
-
+    
     const body = this.body as Phaser.Physics.Arcade.Body //typescript hack for onFloor() function
     if (this.#cursors.up.isDown && (body.touching.down || body.onFloor())) {
       this.setVelocityY(-this.#jumpSpeed)
@@ -105,7 +110,11 @@ export default class Player extends HittableObject {
       ease: 'Cubic.easeOut',
       duration: Player.INVULNERABLE_TIME / (Player.INVULNERABLE_BLINKS * 2),
       repeat: Player.INVULNERABLE_BLINKS,
-      yoyo: true
+      yoyo: true,
+      onComplete(tween, targets)
+      {
+        targets.forEach(e => e.alpha = 1)
+      }
     })
   }
 }
