@@ -5,8 +5,11 @@ export default class EnemyWithSword extends HittableObject {
   isAttacking: boolean
   attackInterval
   constructor(scene: Phaser.Scene, x, y) {
-    super(scene, x, y, 'player_idle')
-    this.setDisplaySize(150, 150)
+    super(scene, x, y, 'ninja')
+    this.setDisplaySize(90, 90)
+
+    this.#resetHitbox()
+    //this.setDisplaySize(150, 150)
     //this.setGravityY(500)
     this.setCollideWorldBounds(true)
 
@@ -32,12 +35,35 @@ export default class EnemyWithSword extends HittableObject {
     this.on('animationstart', (animation, frame) => {
       if (animation.key === 'enemy_attack') {
         this.isAttacking = true
+        this.setSize(90, 70);
+        this.body.setOffset(80,40);
+      }
+    })
+
+    this.on('animationupdate', (animation, frame) => {
+      if (animation.key === 'enemy_attack') {
+        switch(frame.textureFrame)
+        {
+          case 1:
+            this.setSize(60, 70);
+            this.body.setOffset(110,40);
+            break;
+          case 2:
+            this.setSize(120, 70);
+            this.body.setOffset(50,40);
+            break;
+          case 3:
+            this.setSize(160, 70);
+            this.body.setOffset(0,40);
+            break;
+        }
       }
     })
 
     this.on('animationcomplete-enemy_attack', (animation, frame) => {
       this.isAttacking = false
       this.anims.play('stay', true)
+      this.#resetHitbox()
     })
 
     this.anims.play('stay', true)
@@ -47,6 +73,12 @@ export default class EnemyWithSword extends HittableObject {
 
     this.body.onOverlap = true;
     scene.physics.world.on(Phaser.Physics.Arcade.Events.OVERLAP, this.overlapHandler, this);
+  }
+
+  #resetHitbox()
+  {
+    this.setSize(70, 100);
+    this.body.setOffset(15,10);
   }
 
   overlapHandler(enemy, object){
@@ -61,10 +93,18 @@ export default class EnemyWithSword extends HittableObject {
 
   onDead(){
     new Explosion(this.scene, this.x, this.y);
+    this.setDrag(0);
     clearInterval(this.attackInterval)
     this.destroy();
   }
   update(time, delta) {
+    const body = this.body as Phaser.Physics.Arcade.Body //typescript hack for onFloor() function
+    if(body)
+    {
+      if (body.touching.down || body.onFloor()) {
+        this.setDragX(400);
+      }
+    }
     super.update(time, delta)
   }
 }

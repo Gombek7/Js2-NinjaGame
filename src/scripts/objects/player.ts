@@ -11,6 +11,7 @@ export default class Player extends HittableObject {
   static INVULNERABLE_BLINKS = 3
   static VELOCITY_TO_STOP = 20;
   static STOP_FACTOR = 0.055;
+  static KNOCKBACK_STRENGTH = 300;
   #hearthsUI: HearthsUI
   #cursors
   #speed = 300
@@ -20,8 +21,9 @@ export default class Player extends HittableObject {
   constructor(scene: Phaser.Scene, x, y) {
     super(scene, x, y, 'player_idle')
     this.setDisplaySize(75, 75)
+    this.setSize(120,180)
+    this.setOffset(40,10)
     this.body.setMass(100)
-    this.setFriction(0.5)
     //this.setGravityY(500)
     this.setCollideWorldBounds(true)
     scene.cameras.main.startFollow(this)
@@ -54,6 +56,7 @@ export default class Player extends HittableObject {
     this.on('animationstart', (animation, frame) => {
       if (animation.key === 'attack' && !this.isAttacking) {
         this.isAttacking = true
+        this.setSize(240,180)
         //FIXME: super speed when holding space
         this.setVelocityX(this.body.velocity.x + 0.5 * ((this.flipX) ? -this.#speed : this.#speed))
       }
@@ -62,6 +65,8 @@ export default class Player extends HittableObject {
     this.on('animationcomplete-attack', (animation, frame) => {
       this.isAttacking = false
       this.attackedObjects = []
+      this.setSize(120,180)
+      this.setOffset(40,10)
     })
 
     this.#cursors = scene.input.keyboard.createCursorKeys()
@@ -108,7 +113,8 @@ export default class Player extends HittableObject {
       return;
     if((object instanceof(HittableObject)) && this.isAttacking && !this.attackedObjects.includes(object))
     {
-      //object?.setVelocityX(100 * ((this.flipX) ? -1 : 1));
+      let direction = object.body.position.clone().subtract(this.body.position).normalize();
+      object.body.velocity.add(direction.scale(Player.KNOCKBACK_STRENGTH));
       this.attackedObjects.push(object)
       object.Hit(1);
     }
