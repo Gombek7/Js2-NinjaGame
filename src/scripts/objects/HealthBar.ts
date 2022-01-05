@@ -54,7 +54,7 @@ export default class HealthBar extends Phaser.GameObjects.Graphics {
     draw()
     {
         this.clear();
-
+        
         if(this.isHidden)
             return;
         //  Border

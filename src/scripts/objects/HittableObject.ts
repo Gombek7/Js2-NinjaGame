@@ -38,7 +38,7 @@ export default class HittableObject extends Phaser.Physics.Arcade.Sprite {
         if(this.#CurrentHP < 0)
         {
             this.#CurrentHP = 0;
-            this.#onDead();
+            this.onDead();
         }
         if(this.#CurrentHP > this.#MaxHP)
         {
@@ -70,8 +70,8 @@ export default class HittableObject extends Phaser.Physics.Arcade.Sprite {
         this.#healthBar.draw;
     }
 
-    #onDead(){
-
+    onDead(){
+        this.isHealthbarHidden = true;
     };
 
     Hit(damage: number)
@@ -84,7 +84,7 @@ export default class HittableObject extends Phaser.Physics.Arcade.Sprite {
 
         if(this.isDead)
         {
-            this.#onDead();
+            this.onDead();
         }
     }
 
@@ -92,5 +92,10 @@ export default class HittableObject extends Phaser.Physics.Arcade.Sprite {
         //FIXME: Glitching healthbar when moving with camera
         super.update(time, delta);
         this.#healthBar.setPosition(this.x - this.width/4, this.y - this.height/4);
+    }
+
+    destroy(fromScene?: boolean): void {
+        this.#healthBar.destroy();
+        super.destroy(fromScene);
     }
 }

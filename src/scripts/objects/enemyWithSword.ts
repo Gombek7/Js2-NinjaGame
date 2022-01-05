@@ -1,3 +1,4 @@
+import Explosion from './Explosion'
 import HittableObject from './HittableObject'
 
 export default class EnemyWithSword extends HittableObject {
@@ -6,8 +7,11 @@ export default class EnemyWithSword extends HittableObject {
   constructor(scene: Phaser.Scene, x, y) {
     super(scene, x, y, 'player_idle')
     this.setDisplaySize(150, 150)
-    this.setGravityY(500)
+    //this.setGravityY(500)
     this.setCollideWorldBounds(true)
+
+    this.MaxHP = 3;
+    this.CurrentHP = 3;
 
     this.flipX = true
     scene.anims.create({
@@ -40,12 +44,27 @@ export default class EnemyWithSword extends HittableObject {
     this.attackInterval = setInterval(() => {
       this.anims.play('enemy_attack', true)
     }, 1000)
+
+    this.body.onOverlap = true;
+    scene.physics.world.on(Phaser.Physics.Arcade.Events.OVERLAP, this.overlapHandler, this);
   }
 
-  coliderWithPlayer = () => {
+  overlapHandler(enemy, object){
+    if(enemy != this)
+      return;
+    if(object instanceof(HittableObject) && this.isAttacking)
+    {
+      object?.setVelocityX(-100);
+      object.Hit(1);
+    }
+  };
+
+  onDead(){
+    new Explosion(this.scene, this.x, this.y);
     clearInterval(this.attackInterval)
-    this.destroy()
+    this.destroy();
   }
-
-  update() {}
+  update(time, delta) {
+    super.update(time, delta)
+  }
 }

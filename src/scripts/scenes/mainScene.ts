@@ -15,7 +15,7 @@ const platoformsWidth = [
 export default class MainScene extends Phaser.Scene {
   fpsText
   player
-  enemyWithSword
+  enemiesWithSword
   platforms
   fireball
   boom
@@ -48,19 +48,19 @@ export default class MainScene extends Phaser.Scene {
       */
     }
 
-    this.enemyWithSword = []
+    this.enemiesWithSword = []
     for (let i = 0; i < 4; i++) {
-      this.enemyWithSword.push(
+      this.enemiesWithSword.push(
         new EnemyWithSword(this, platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)], 0)
       )
-      this.physics.add.collider(this.player, this.enemyWithSword[i], () => {
+      this.physics.add.overlap(this.enemiesWithSword[i], this.player/*, () => {
         if (this.player.isAttacking) {
-          this.boom = new Explosion(this, this.enemyWithSword[i].x, this.enemyWithSword[i].y)
-          this.enemyWithSword[i].coliderWithPlayer()
+          this.boom = new Explosion(this, this.enemiesWithSword[i].x, this.enemiesWithSword[i].y)
+          this.enemiesWithSword[i].coliderWithPlayer()
         } else {
           this.player.Hit(1)
         }
-      })
+      }*/)
     }
 
     this.platforms = this.physics.add.staticGroup()
@@ -74,11 +74,14 @@ export default class MainScene extends Phaser.Scene {
 
     this.platforms.getChildren().forEach(c => c.setScale(0.8).setOrigin(0).refreshBody())
     this.physics.add.collider(this.player, this.platforms)
-    this.physics.add.collider(this.player, this.enemyWithSword)
+    this.physics.add.overlap(this.player, this.enemiesWithSword)
   }
 
   update(time, delta) {
     this.player.update(time, delta)
+    this.enemiesWithSword.forEach(enemy => {
+      enemy.update(time, delta);
+    });
     this.fpsText.update()
   }
 }

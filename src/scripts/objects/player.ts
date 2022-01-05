@@ -5,6 +5,7 @@ import HittableObject from './HittableObject'
 
 export default class Player extends HittableObject {
   isAttacking: boolean
+  attackedObjects: Object[]
   isInvulnerable: boolean
   static INVULNERABLE_TIME = 500
   static INVULNERABLE_BLINKS = 3
@@ -21,7 +22,7 @@ export default class Player extends HittableObject {
     this.setDisplaySize(75, 75)
     this.body.setMass(100)
     this.setFriction(0.5)
-    this.setGravityY(500)
+    //this.setGravityY(500)
     this.setCollideWorldBounds(true)
     scene.cameras.main.startFollow(this)
 
@@ -49,7 +50,7 @@ export default class Player extends HittableObject {
     })
 
     this.isAttacking = false
-
+    this.attackedObjects = [];
     this.on('animationstart', (animation, frame) => {
       if (animation.key === 'attack' && !this.isAttacking) {
         this.isAttacking = true
@@ -60,6 +61,7 @@ export default class Player extends HittableObject {
 
     this.on('animationcomplete-attack', (animation, frame) => {
       this.isAttacking = false
+      this.attackedObjects = []
     })
 
     this.#cursors = scene.input.keyboard.createCursorKeys()
@@ -97,7 +99,20 @@ export default class Player extends HittableObject {
     if (this.#cursors.up.isDown && (body.touching.down || body.onFloor())) {
       this.setVelocityY(-this.#jumpSpeed)
     }
+
+    body.onOverlap = true;
+    this.scene.physics.world.on(Phaser.Physics.Arcade.Events.OVERLAP, this.overlapHandler, this);
   }
+  overlapHandler(player, object){
+    if(player != this)
+      return;
+    if((object instanceof(HittableObject)) && this.isAttacking && !this.attackedObjects.includes(object))
+    {
+      //object?.setVelocityX(100 * ((this.flipX) ? -1 : 1));
+      this.attackedObjects.push(object)
+      object.Hit(1);
+    }
+  };
 
   Hit(damage: number): void {
     if (this.isInvulnerable) return
