@@ -16,26 +16,26 @@ export default class EnemyWithSword extends HittableObject {
     this.flipX = true
     scene.anims.create({
       key: 'stay',
-      frames: this.anims.generateFrameNumbers('ninja', { start: 0, end: 3 }),
-      frameRate: 10,
-      repeat: 1
+      frames: this.anims.generateFrameNumbers('ninja', { start: 0, end: 2 }),
+      frameRate: 8,
+      repeat: -1
     })
     scene.anims.create({
       key: 'enemy_attack',
       frames: this.anims.generateFrameNumbers('ninja_attack', { start: 0, end: 3 }),
-      frameRate: 16,
-      repeat: 1
+      frameRate: 8,
+      repeat: 0
     })
 
     this.isAttacking = false
 
     this.on('animationstart', (animation, frame) => {
-      if (animation.key === 'attack') {
+      if (animation.key === 'enemy_attack') {
         this.isAttacking = true
       }
     })
 
-    this.on('animationcomplete-attack', (animation, frame) => {
+    this.on('animationcomplete-enemy_attack', (animation, frame) => {
       this.isAttacking = false
       this.anims.play('stay', true)
     })
@@ -43,7 +43,7 @@ export default class EnemyWithSword extends HittableObject {
     this.anims.play('stay', true)
     this.attackInterval = setInterval(() => {
       this.anims.play('enemy_attack', true)
-    }, 1000)
+    }, 2000)
 
     this.body.onOverlap = true;
     scene.physics.world.on(Phaser.Physics.Arcade.Events.OVERLAP, this.overlapHandler, this);
