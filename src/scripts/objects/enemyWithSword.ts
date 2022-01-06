@@ -72,10 +72,12 @@ export default class EnemyWithSword extends HittableObject {
     })
 
     this.anims.play('stay', true)
-    this.attackInterval = setInterval(() => {
-      this.anims.play('enemy_attack', true)
-    }, 2000)
-
+    setTimeout(()=>{
+      this.attackInterval = setInterval(() => {
+        this.anims.play('enemy_attack', true)
+      }, 2000)
+    }, Math.random() * 2000)
+    
     this.body.onOverlap = true;
     scene.physics.world.on(Phaser.Physics.Arcade.Events.OVERLAP, this.overlapHandler, this);
   }

@@ -33,7 +33,6 @@ export default class PickableHearth extends Phaser.Physics.Arcade.Sprite {
           object.Heal(1);
         }
 
-        //TODO: Play some heal effect
         this.scene.tweens.add({
             targets: this,
             alpha:0,
