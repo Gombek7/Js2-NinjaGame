@@ -7,7 +7,6 @@ export default class PickableHearth extends Phaser.Physics.Arcade.Sprite {
 		super(scene, x, y, 'hearth');
 		scene.add.existing(this);
 		scene.physics.add.existing(this);
-		UpdateList.push(this);
 		PickablesLayer.add(this);
 
 		const body = this.body as Phaser.Physics.Arcade.Body //typescript hack
@@ -33,6 +32,8 @@ export default class PickableHearth extends Phaser.Physics.Arcade.Sprite {
 		if (hearth != this)
 			return;
 		if (object instanceof (HittableObject)) {
+			if(object.CurrentHP >= object.MaxHP)
+				return;
 			object.Heal(1);
 		}
 
@@ -51,10 +52,6 @@ export default class PickableHearth extends Phaser.Physics.Arcade.Sprite {
 	};
 
 	destroy(fromScene?: boolean): void {
-		const index = UpdateList.indexOf(this);
-		if (index > -1)
-			UpdateList.splice(index, 1);
-
 		PickablesLayer.remove(this);
 		super.destroy(fromScene);
 	}

@@ -9,7 +9,7 @@ import Saw from '../objects/Saw'
 import PickableHearth from '../objects/PickableHearth'
 import HearthCrate from '../objects/HearthCrate'
 import UpdateList from './UpdateList'
-import { PickablesLayer, PlayerLayer } from '../utils/CollisionLayers'
+import { EnemiesLayer, TrapsLayer, PickablesLayer, PlayerLayer, DestroyablesLayer, PlatformsLayer } from '../utils/CollisionLayers'
 import ScoreText from '../objects/scoreText'
 import GameOverText from '../objects/gameOverText'
 
@@ -27,12 +27,10 @@ export default class MainScene extends Phaser.Scene {
   enemiesWithSword
   platforms
   saws
-  hearths
   fireballs
   boom
   intervalEnemies
   intervalFireball
-  test_crate
   constructor() {
     super({ key: 'MainScene' })
   }
@@ -48,6 +46,10 @@ export default class MainScene extends Phaser.Scene {
 
     PlayerLayer.setScene(this);
     PickablesLayer.setScene(this);
+    EnemiesLayer.setScene(this);
+    TrapsLayer.setScene(this);
+    DestroyablesLayer.setScene(this);
+    PlatformsLayer.setScene(this);
 
     this.player = new Player(this, 50, 100)
 
@@ -69,20 +71,9 @@ export default class MainScene extends Phaser.Scene {
     this.saws = []
     this.addSaws()
 
-    this.physics.add.overlap(this.saws, this.player)
-    this.physics.add.overlap(this.saws, this.enemiesWithSword)
-
-    //TODO: spawn healths on kill enemies and add overlap to player
-    this.hearths = [];
-    this.hearths.push(new PickableHearth(this, 300, 300));
-    //this.physics.add.overlap(this.hearths, this.player);
-
-    this.test_crate = new HearthCrate(this, 50, 50)
-    this.physics.add.collider(this.test_crate, this.platforms)
-    this.physics.add.overlap(this.player, this.test_crate)
-
-    this.physics.add.collider(this.player, this.platforms)
-    this.physics.add.collider(this.enemiesWithSword, this.platforms)
+    //TODO: spawn crates
+    new PickableHearth(this, 300, 300)
+    new HearthCrate(this, 50, 50)
   }
 
   addFireballs() {
@@ -91,7 +82,6 @@ export default class MainScene extends Phaser.Scene {
         new Fireball(this, 1900, platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50)
       )
     }
-    this.physics.add.overlap(this.fireballs, this.player)
   }
 
   addEnemiesWithSword() {
@@ -102,8 +92,6 @@ export default class MainScene extends Phaser.Scene {
         })
       )
     }
-    this.physics.add.overlap(this.enemiesWithSword, this.player)
-    this.physics.add.overlap(this.player, this.enemiesWithSword)
   }
 
   addPlatforms() {
@@ -116,7 +104,16 @@ export default class MainScene extends Phaser.Scene {
     }
     this.platforms
       .getChildren()
-      .forEach(c => (c.setScale(0.8).setOrigin(0).refreshBody().body.checkCollision.down = false))
+      .forEach(c => {
+        c.setScale(0.8).setOrigin(0).refreshBody()
+        c.body.checkCollision.down = false
+        c.body.checkCollision.left = false
+        c.body.checkCollision.right = false
+        PlatformsLayer.add(c)
+        c.on('destroy',()=>{
+          PlatformsLayer.remove(c)
+        })
+      })
   }
 
   addSaws() {

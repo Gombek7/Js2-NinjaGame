@@ -1,9 +1,13 @@
+import { DestroyablesLayer, TrapsLayer } from '../utils/CollisionLayers';
 import HittableObject from './HittableObject'
 import PickableHearth from './PickableHearth';
 
 export default class HearthCrate extends HittableObject {
     constructor(scene: Phaser.Scene, x, y) {
         super(scene, x, y, 'hearth_crate')
+        this.setCollideWorldBounds(true)
+        DestroyablesLayer.add(this)
+        
         this.setDisplaySize(50, 50)
         this.MaxHP = 2;
         this.CurrentHP = 2;
@@ -25,6 +29,7 @@ export default class HearthCrate extends HittableObject {
     onDead(){
         this.isHealthbarHidden = true;
         new PickableHearth(this.scene, this.x, this.y);
+        DestroyablesLayer.remove(this)
         this.scene.tweens.add({
             targets: this,
             alpha:0,

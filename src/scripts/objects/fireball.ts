@@ -1,3 +1,4 @@
+import { TrapsLayer } from "../utils/CollisionLayers";
 import Explosion from "./Explosion"
 import HittableObject from "./HittableObject"
 
@@ -8,6 +9,8 @@ export default class Fireball extends Phaser.Physics.Arcade.Sprite {
     super(scene, x, y, 'fireball')
     scene.add.existing(this)
     scene.physics.add.existing(this)
+    TrapsLayer.add(this)
+
     this.flipX = true
     this.body.setSize(this.body.width * 0.4, this.body.height)
     this.body.setOffset(0,0);
@@ -28,6 +31,7 @@ export default class Fireball extends Phaser.Physics.Arcade.Sprite {
 
   destroy(){
     this.scene.physics.world.off(Phaser.Physics.Arcade.Events.OVERLAP, this.overlapHandler, this)
+    TrapsLayer.remove(this);
     super.destroy();
   }
 

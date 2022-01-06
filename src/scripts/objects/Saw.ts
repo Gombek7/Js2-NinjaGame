@@ -1,4 +1,5 @@
 import UpdateList from "../scenes/UpdateList";
+import { TrapsLayer } from "../utils/CollisionLayers";
 import HittableObject from "./HittableObject";
 
 export default class Saw extends Phaser.Physics.Arcade.Sprite{
@@ -11,7 +12,8 @@ export default class Saw extends Phaser.Physics.Arcade.Sprite{
         scene.add.existing(this);
 		scene.physics.add.existing(this);
         UpdateList.push(this);
-        
+        TrapsLayer.add(this);
+
         const body = this.body as Phaser.Physics.Arcade.Body; //typescript hack
         body.setAllowGravity(false);
 
@@ -46,6 +48,7 @@ export default class Saw extends Phaser.Physics.Arcade.Sprite{
 		if (index > -1)
 			UpdateList.splice(index, 1);
 
+        TrapsLayer.remove(this);
         super.destroy();
     }
 }

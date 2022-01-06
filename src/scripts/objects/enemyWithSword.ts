@@ -1,3 +1,4 @@
+import { EnemiesLayer } from '../utils/CollisionLayers'
 import Explosion from './Explosion'
 import HittableObject from './HittableObject'
 
@@ -10,6 +11,7 @@ export default class EnemyWithSword extends HittableObject {
   static KNOCKBACK_STRENGTH = 300
   constructor(scene: Phaser.Scene, x, y, updateScore) {
     super(scene, x, y, 'ninja')
+    EnemiesLayer.add(this)
     this.setDisplaySize(90, 90)
 
     this.updateScore = updateScore
@@ -109,6 +111,7 @@ export default class EnemyWithSword extends HittableObject {
     this.updateScore()
     this.setDrag(0)
     clearInterval(this.attackInterval)
+    EnemiesLayer.remove(this);
     this.destroy()
   }
   update(time, delta) {
