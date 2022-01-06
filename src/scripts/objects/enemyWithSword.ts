@@ -114,4 +114,30 @@ export default class EnemyWithSword extends HittableObject {
     }
     super.update(time, delta)
   }
+
+  Hit(damage: number): void {
+    this.tintFill = true;
+    setTimeout(() => {
+      this.tintFill = false;
+      this.setTint(0xffffff);
+      setTimeout(() => {
+        this.clearTint();
+      }, 100);
+    }, 100);
+
+    this.scene.tweens.add({
+      targets: this,
+      alpha: 0.5,
+      ease: 'Cubic.easeOut',
+      duration: 100,
+      repeat: 0,
+      yoyo: true,
+      onComplete(tween, targets)
+      {
+        targets.forEach(e => e.alpha = 1)
+      }
+    })
+
+    super.Hit(damage);
+  }
 }
