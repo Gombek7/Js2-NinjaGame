@@ -1,4 +1,5 @@
 import { Time } from 'phaser'
+import { PlayerLayer } from '../utils/CollisionLayers'
 import Explosion from './Explosion'
 import HearthsUI from './HearthsUI'
 import HittableObject from './HittableObject'
@@ -21,6 +22,7 @@ export default class Player extends HittableObject {
 
   constructor(scene: Phaser.Scene, x, y) {
     super(scene, x, y, 'player_idle')
+    PlayerLayer.add(this)
     this.setDisplaySize(75, 75)
     this.setSize(120,180)
     this.setOffset(40,10)
@@ -146,5 +148,10 @@ export default class Player extends HittableObject {
   Heal(healedHP: number): void {
     super.Heal(healedHP)
     this.#hearthsUI.update(this.CurrentHP, this.MaxHP)
+  }
+
+  destroy(fromScene?: boolean): void {
+    PlayerLayer.remove(this)
+    super.destroy(fromScene)
   }
 }
