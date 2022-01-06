@@ -3,7 +3,7 @@ import HealthBar from "./HealthBar";
 export default class HittableObject extends Phaser.Physics.Arcade.Sprite {
     #MaxHP;
     #CurrentHP;
-    #healthBar: HealthBar;
+    #healthBar: HealthBar | null;
 	constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
         super(scene, x, y, texture);
 		scene.add.existing(this);
@@ -11,14 +11,36 @@ export default class HittableObject extends Phaser.Physics.Arcade.Sprite {
 
         this.#MaxHP = 1;
         this.#CurrentHP = 1;
-        this.#healthBar = new HealthBar(scene);
-        this.#healthBar.value = 100;
+
+        this.#healthBar = null;
+
+        this.showHealthbar();
+    }
+
+    showHealthbar()
+    {
+        if (this.#healthBar instanceof HealthBar)
+            return;
+        
+        this.#healthBar = new HealthBar(this.scene);
+        this.#healthBar.value = 100 * this.#CurrentHP / this.#MaxHP;
+        this.#healthBar.draw();
+    }
+
+    hideHealthbar()
+    {
+        if (!(this.#healthBar instanceof HealthBar))
+            return;
+        
+        this.#healthBar.destroy();
+        this.#healthBar = null;
     }
 
     set MaxHP(value: number)
     {
         this.#MaxHP = value;
-        this.#healthBar.value = 100 * this.#CurrentHP / this.#MaxHP;
+        if (this.#healthBar instanceof HealthBar)
+            this.#healthBar.value = 100 * this.#CurrentHP / this.#MaxHP;
     }
 
     get MaxHP()
@@ -44,7 +66,8 @@ export default class HittableObject extends Phaser.Physics.Arcade.Sprite {
         {
             this.#CurrentHP = this.#MaxHP;
         }
-        this.#healthBar.value = 100 * this.#CurrentHP / this.#MaxHP;
+        if (this.#healthBar instanceof HealthBar)
+            this.#healthBar.value = 100 * this.#CurrentHP / this.#MaxHP;
     }
 
     get isDead()
@@ -56,22 +79,24 @@ export default class HittableObject extends Phaser.Physics.Arcade.Sprite {
     {
         if (value)
             this.Hit(this.#CurrentHP);
-        this.#healthBar.isHidden = true;
     }
 
     get isHealthbarHidden()
     {
-        return this.#healthBar.isHidden;
+        return !(this.#healthBar instanceof HealthBar);
     }
 
     set isHealthbarHidden(value: boolean)
     {
-        this.#healthBar.isHidden = value;
-        this.#healthBar.draw;
+        if(value)
+            this.hideHealthbar();
+        else
+            this.showHealthbar();
+        
     }
 
     onDead(){
-        this.isHealthbarHidden = true;
+        this.hideHealthbar();
     };
 
     Hit(damage: number)
@@ -80,7 +105,9 @@ export default class HittableObject extends Phaser.Physics.Arcade.Sprite {
             return;
 
         this.#CurrentHP -= damage;
-        this.#healthBar.value = 100 * this.#CurrentHP / this.#MaxHP;
+
+        if (this.#healthBar instanceof HealthBar)
+            this.#healthBar.value = 100 * this.#CurrentHP / this.#MaxHP;
 
         if(this.isDead)
         {
@@ -91,11 +118,12 @@ export default class HittableObject extends Phaser.Physics.Arcade.Sprite {
     update(time, delta) {
         //FIXME: Glitching healthbar when moving with camera
         super.update(time, delta);
-        this.#healthBar.setPosition(this.x - this.width*this.scaleX/2, this.y - this.height*this.scaleY/2 - 10);
+        if (this.#healthBar instanceof HealthBar)
+            this.#healthBar.setPosition(this.x - this.width*this.scaleX/2, this.y - this.height*this.scaleY/2 - 10);
     }
 
     destroy(fromScene?: boolean): void {
-        this.#healthBar.destroy();
+        this.hideHealthbar();
         super.destroy(fromScene);
     }
 }

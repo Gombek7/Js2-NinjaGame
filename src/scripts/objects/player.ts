@@ -74,6 +74,7 @@ export default class Player extends HittableObject {
     //Hp config
     this.MaxHP = 10
     this.CurrentHP = 7
+    this.hideHealthbar();
     this.#hearthsUI = new HearthsUI(this.scene)
     this.#hearthsUI.update(this.CurrentHP, this.MaxHP)
   }

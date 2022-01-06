@@ -24,12 +24,12 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
+    let background = this.add.tileSprite(0, 0, 1920, 600, 'background')
     this.fpsText = new FpsText(this)
-    let background = this.add.tileSprite(0, 30, 1920, 600, 'background')
     background.setOrigin(0)
     background.setScrollFactor(0.6) //fixedToCamera = true;
     this.cameras.main.setBounds(0, 0, DEFAULT_WIDTH + 1840, DEFAULT_HEIGHT)
-    this.physics.world.setBounds(0, 0, DEFAULT_WIDTH + 1840, DEFAULT_HEIGHT)
+    this.physics.world.setBounds(0, 0, DEFAULT_WIDTH + 1840, DEFAULT_HEIGHT,true,true,false,true)
 
     this.player = new Player(this, 50, 100)
 

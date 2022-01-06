@@ -4,7 +4,6 @@ export default class HealthBar extends Phaser.GameObjects.Graphics {
     #width;
     #height;
     #border;
-    isHidden: boolean;
     constructor (scene)
     {
         super(scene, {x:0,y:0});
@@ -13,7 +12,6 @@ export default class HealthBar extends Phaser.GameObjects.Graphics {
         this.#height = 10;
         this.#border = 1;
 
-        this.isHidden = false;
         this.draw();
 
     }
@@ -55,8 +53,6 @@ export default class HealthBar extends Phaser.GameObjects.Graphics {
     {
         this.clear();
         
-        if(this.isHidden)
-            return;
         //  Border
         this.fillStyle(0x000000);
         this.fillRect(0, 0, this.#width, this.#height);
