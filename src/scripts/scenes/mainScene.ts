@@ -5,6 +5,7 @@ import Fireball from '../objects/fireball'
 import HearthsUI from '../objects/HearthsUI'
 import Explosion from '../objects/Explosion'
 import EnemyWithSword from '../objects/enemyWithSword'
+import Saw from '../objects/Saw'
 
 const platformsHeights = [130, 230, 330, 450]
 const platoformsWidth = [
@@ -17,7 +18,8 @@ export default class MainScene extends Phaser.Scene {
   player
   enemiesWithSword
   platforms
-  fireball
+  saws
+  fireballs
   boom
   constructor() {
     super({ key: 'MainScene' })
@@ -33,12 +35,12 @@ export default class MainScene extends Phaser.Scene {
 
     this.player = new Player(this, 50, 100)
 
-    this.fireball = []
+    this.fireballs = []
     for (let i = 0; i < 6; i++) {
-      this.fireball.push(
+      this.fireballs.push(
         new Fireball(this, 1900, platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50)
       )
-      this.physics.add.overlap(this.fireball[i], this.player);
+      this.physics.add.overlap(this.fireballs[i], this.player);
     }
 
     this.enemiesWithSword = []
@@ -57,8 +59,20 @@ export default class MainScene extends Phaser.Scene {
         'platform'
       )
     }
-
     this.platforms.getChildren().forEach(c => c.setScale(0.8).setOrigin(0).refreshBody().body.checkCollision.down = false)
+
+    this.saws = [];
+    for (let i = 0; i < 10; i++) {
+      this.saws.push(
+        new Saw(
+          this,
+          platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)],
+          platformsHeights[Math.floor(Math.random() * platformsHeights.length)],
+        ));
+    }
+    this.physics.add.overlap(this.saws, this.player);
+    this.physics.add.overlap(this.saws, this.enemiesWithSword);
+
     this.physics.add.collider(this.player, this.platforms)
     this.physics.add.collider(this.enemiesWithSword, this.platforms)
     this.physics.add.overlap(this.player, this.enemiesWithSword)
@@ -68,6 +82,9 @@ export default class MainScene extends Phaser.Scene {
     this.player.update(time, delta)
     this.enemiesWithSword.forEach(enemy => {
       enemy.update(time, delta);
+    });
+    this.saws.forEach(saw => {
+      saw.update(time, delta);
     });
     this.fpsText.update()
   }
