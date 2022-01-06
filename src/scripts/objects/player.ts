@@ -142,4 +142,9 @@ export default class Player extends HittableObject {
       }
     })
   }
+
+  Heal(healedHP: number): void {
+    super.Heal(healedHP)
+    this.#hearthsUI.update(this.CurrentHP, this.MaxHP)
+  }
 }

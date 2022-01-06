@@ -6,6 +6,7 @@ import HearthsUI from '../objects/HearthsUI'
 import Explosion from '../objects/Explosion'
 import EnemyWithSword from '../objects/enemyWithSword'
 import Saw from '../objects/Saw'
+import PickableHearth from '../objects/PickableHearth'
 
 const platformsHeights = [130, 230, 330, 450]
 const platoformsWidth = [
@@ -19,6 +20,7 @@ export default class MainScene extends Phaser.Scene {
   enemiesWithSword
   platforms
   saws
+  hearths
   fireballs
   boom
   constructor() {
@@ -73,6 +75,11 @@ export default class MainScene extends Phaser.Scene {
     this.physics.add.overlap(this.saws, this.player);
     this.physics.add.overlap(this.saws, this.enemiesWithSword);
 
+    //TODO: spawn healths on kill enemies and add overlap to player
+    this.hearths = [];
+    this.hearths.push(new PickableHearth(this, 300, 300));
+    this.physics.add.overlap(this.hearths, this.player);
+
     this.physics.add.collider(this.player, this.platforms)
     this.physics.add.collider(this.enemiesWithSword, this.platforms)
     this.physics.add.overlap(this.player, this.enemiesWithSword)
@@ -85,6 +92,9 @@ export default class MainScene extends Phaser.Scene {
     });
     this.saws.forEach(saw => {
       saw.update(time, delta);
+    });
+    this.hearths.forEach(hearth => {
+      hearth.update(time, delta);
     });
     this.fpsText.update()
   }
