@@ -9,6 +9,7 @@ import Saw from '../objects/Saw'
 import PickableHearth from '../objects/PickableHearth'
 import HearthCrate from '../objects/HearthCrate'
 import UpdateList from './UpdateList'
+import { PickablesLayer, PlayerLayer } from '../utils/CollisionLayers'
 import ScoreText from '../objects/scoreText'
 import GameOverText from '../objects/gameOverText'
 
@@ -45,6 +46,9 @@ export default class MainScene extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, DEFAULT_WIDTH + 1840, DEFAULT_HEIGHT)
     this.physics.world.setBounds(0, 0, DEFAULT_WIDTH + 1840, DEFAULT_HEIGHT, true, true, false, true)
 
+    PlayerLayer.setScene(this);
+    PickablesLayer.setScene(this);
+
     this.player = new Player(this, 50, 100)
 
     this.fireballs = []
@@ -69,9 +73,9 @@ export default class MainScene extends Phaser.Scene {
     this.physics.add.overlap(this.saws, this.enemiesWithSword)
 
     //TODO: spawn healths on kill enemies and add overlap to player
-    this.hearths = []
-    this.hearths.push(new PickableHearth(this, 300, 300))
-    this.physics.add.overlap(this.hearths, this.player)
+    this.hearths = [];
+    this.hearths.push(new PickableHearth(this, 300, 300));
+    //this.physics.add.overlap(this.hearths, this.player);
 
     this.test_crate = new HearthCrate(this, 50, 50)
     this.physics.add.collider(this.test_crate, this.platforms)

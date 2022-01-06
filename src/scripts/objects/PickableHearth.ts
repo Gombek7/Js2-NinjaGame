@@ -1,4 +1,5 @@
 import UpdateList from "../scenes/UpdateList";
+import { PickablesLayer } from "../utils/CollisionLayers";
 import HittableObject from "./HittableObject"
 
 export default class PickableHearth extends Phaser.Physics.Arcade.Sprite {
@@ -7,6 +8,7 @@ export default class PickableHearth extends Phaser.Physics.Arcade.Sprite {
 		scene.add.existing(this);
 		scene.physics.add.existing(this);
 		UpdateList.push(this);
+		PickablesLayer.add(this);
 
 		const body = this.body as Phaser.Physics.Arcade.Body //typescript hack
 		body.setAllowGravity(false)
@@ -53,6 +55,7 @@ export default class PickableHearth extends Phaser.Physics.Arcade.Sprite {
 		if (index > -1)
 			UpdateList.splice(index, 1);
 
+		PickablesLayer.remove(this);
 		super.destroy(fromScene);
 	}
 }
