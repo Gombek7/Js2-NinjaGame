@@ -7,6 +7,7 @@ import Explosion from '../objects/Explosion'
 import EnemyWithSword from '../objects/enemyWithSword'
 import Saw from '../objects/Saw'
 import PickableHearth from '../objects/PickableHearth'
+import HearthCrate from '../objects/HearthCrate'
 
 const platformsHeights = [130, 230, 330, 450]
 const platoformsWidth = [
@@ -23,6 +24,7 @@ export default class MainScene extends Phaser.Scene {
   hearths
   fireballs
   boom
+  test_crate
   constructor() {
     super({ key: 'MainScene' })
   }
@@ -80,6 +82,10 @@ export default class MainScene extends Phaser.Scene {
     this.hearths.push(new PickableHearth(this, 300, 300));
     this.physics.add.overlap(this.hearths, this.player);
 
+    this.test_crate= new HearthCrate(this, 50,50);
+    this.physics.add.collider(this.test_crate, this.platforms)
+    this.physics.add.overlap(this.player, this.test_crate)
+
     this.physics.add.collider(this.player, this.platforms)
     this.physics.add.collider(this.enemiesWithSword, this.platforms)
     this.physics.add.overlap(this.player, this.enemiesWithSword)
@@ -97,5 +103,6 @@ export default class MainScene extends Phaser.Scene {
       hearth.update(time, delta);
     });
     this.fpsText.update()
+    this.test_crate?.update(time, delta);
   }
 }

@@ -3,6 +3,7 @@ import HealthBar from "./HealthBar";
 export default class HittableObject extends Phaser.Physics.Arcade.Sprite {
     #MaxHP;
     #CurrentHP;
+    healthBarOffset:  Phaser.Math.Vector2
     #healthBar: HealthBar | null;
 	constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
         super(scene, x, y, texture);
@@ -13,7 +14,7 @@ export default class HittableObject extends Phaser.Physics.Arcade.Sprite {
         this.#CurrentHP = 1;
 
         this.#healthBar = null;
-
+        this.healthBarOffset = new Phaser.Math.Vector2(0,0)
         this.showHealthbar();
     }
 
@@ -127,7 +128,7 @@ export default class HittableObject extends Phaser.Physics.Arcade.Sprite {
         //FIXME: Glitching healthbar when moving with camera
         super.update(time, delta);
         if (this.#healthBar instanceof HealthBar)
-            this.#healthBar.setPosition(this.x - this.width*this.scaleX/2, this.y - this.height*this.scaleY/2 - 10);
+            this.#healthBar.setPosition(this.healthBarOffset.x + this.x - this.width*this.scaleX/2, this.healthBarOffset.y + this.y - this.height*this.scaleY/2 - 10);
     }
 
     destroy(fromScene?: boolean): void {
