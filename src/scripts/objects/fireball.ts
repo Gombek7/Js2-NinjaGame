@@ -26,15 +26,25 @@ export default class Fireball extends Phaser.Physics.Arcade.Sprite {
     this.setVelocityX(-200)
 
     this.body.onOverlap = true;
+    this.setCollideWorldBounds(true);
+    body.onWorldBounds = true;
     scene.physics.world.on(Phaser.Physics.Arcade.Events.OVERLAP, this.overlapHandler, this);
+    body.world.on(Phaser.Physics.Arcade.Events.WORLD_BOUNDS, this.worldBoundsHandler, this);
   }
 
   destroy(){
     this.scene.physics.world.off(Phaser.Physics.Arcade.Events.OVERLAP, this.overlapHandler, this)
+    this.body.world.off(Phaser.Physics.Arcade.Events.WORLD_BOUNDS, this.worldBoundsHandler, this);
     TrapsLayer.remove(this);
     super.destroy();
   }
-
+  worldBoundsHandler(body){
+    if(body.gameObject !== this)
+      return;
+    console.log(body);
+    new Explosion(this.scene, this.x, this.y);
+    this.destroy();
+  }
   overlapHandler(fireball, object){
     if(fireball != this)
       return;
