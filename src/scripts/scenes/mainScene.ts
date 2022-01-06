@@ -58,7 +58,7 @@ export default class MainScene extends Phaser.Scene {
       )
     }
 
-    this.platforms.getChildren().forEach(c => c.setScale(0.8).setOrigin(0).refreshBody())
+    this.platforms.getChildren().forEach(c => c.setScale(0.8).setOrigin(0).refreshBody().body.checkCollision.down = false)
     this.physics.add.collider(this.player, this.platforms)
     this.physics.add.collider(this.enemiesWithSword, this.platforms)
     this.physics.add.overlap(this.player, this.enemiesWithSword)
