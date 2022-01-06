@@ -7,7 +7,6 @@ export default class FpsText extends Phaser.GameObjects.Text {
     scene.add.existing(this)
     UpdateList.push(this);
     this.setOrigin(0)
-
     this.setScrollFactor(0) //move with camera
   }
 

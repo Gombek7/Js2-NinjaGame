@@ -11,9 +11,9 @@ export default class Player extends HittableObject {
   isInvulnerable: boolean
   static INVULNERABLE_TIME = 500
   static INVULNERABLE_BLINKS = 3
-  static VELOCITY_TO_STOP = 20;
-  static STOP_FACTOR = 0.055;
-  static KNOCKBACK_STRENGTH = 300;
+  static VELOCITY_TO_STOP = 20
+  static STOP_FACTOR = 0.055
+  static KNOCKBACK_STRENGTH = 300
   #hearthsUI: HearthsUI
   #cursors
   #speed = 300
@@ -24,8 +24,8 @@ export default class Player extends HittableObject {
     super(scene, x, y, 'player_idle')
     PlayerLayer.add(this)
     this.setDisplaySize(75, 75)
-    this.setSize(120,180)
-    this.setOffset(40,10)
+    this.setSize(120, 180)
+    this.setOffset(40, 10)
     this.body.setMass(100)
     //this.setGravityY(500)
     this.setCollideWorldBounds(true)
@@ -55,29 +55,29 @@ export default class Player extends HittableObject {
     })
 
     this.isAttacking = false
-    this.attackedObjects = [];
+    this.attackedObjects = []
     this.on('animationstart', (animation, frame) => {
       if (animation.key === 'attack' && !this.isAttacking) {
         this.isAttacking = true
-        this.setSize(240,180)
+        this.setSize(240, 180)
         //FIXME: super speed when holding space
-        this.setVelocityX(this.body.velocity.x + 0.5 * ((this.flipX) ? -this.#speed : this.#speed))
+        this.setVelocityX(this.body.velocity.x + 0.5 * (this.flipX ? -this.#speed : this.#speed))
       }
     })
 
     this.on('animationcomplete-attack', (animation, frame) => {
       this.isAttacking = false
       this.attackedObjects = []
-      this.setSize(120,180)
-      this.setOffset(40,10)
+      this.setSize(120, 180)
+      this.setOffset(40, 10)
     })
 
     this.#cursors = scene.input.keyboard.createCursorKeys()
 
     //Hp config
     this.MaxHP = 10
-    this.CurrentHP = 7
-    this.hideHealthbar();
+    this.CurrentHP = 1
+    this.hideHealthbar()
     this.#hearthsUI = new HearthsUI(this.scene)
     this.#hearthsUI.update(this.CurrentHP, this.MaxHP)
   }
@@ -88,41 +88,35 @@ export default class Player extends HittableObject {
       this.anims.play('attack', true)
     } else if (this.#cursors.left.isDown) {
       this.setVelocityX(-this.#speed)
-      if(!this.isAttacking)
-        this.anims.play('run', true)
+      if (!this.isAttacking) this.anims.play('run', true)
       this.flipX = true
     } else if (this.#cursors.right.isDown) {
       this.setVelocityX(this.#speed)
-      if(!this.isAttacking)
-        this.anims.play('run', true)
+      if (!this.isAttacking) this.anims.play('run', true)
       this.flipX = false
     } else {
-      this.setVelocityX(this.body.velocity.x  * delta * Player.STOP_FACTOR);
-      if(Math.abs(this.body.velocity.x) < Player.VELOCITY_TO_STOP)
-        this.setVelocityX(0);
-      if(!this.isAttacking)
-        this.anims.play('idle', true)
+      this.setVelocityX(this.body.velocity.x * delta * Player.STOP_FACTOR)
+      if (Math.abs(this.body.velocity.x) < Player.VELOCITY_TO_STOP) this.setVelocityX(0)
+      if (!this.isAttacking) this.anims.play('idle', true)
     }
-    
+
     const body = this.body as Phaser.Physics.Arcade.Body //typescript hack for onFloor() function
     if (this.#cursors.up.isDown && (body.touching.down || body.onFloor())) {
       this.setVelocityY(-this.#jumpSpeed)
     }
 
-    body.onOverlap = true;
-    this.scene.physics.world.on(Phaser.Physics.Arcade.Events.OVERLAP, this.overlapHandler, this);
+    body.onOverlap = true
+    this.scene.physics.world.on(Phaser.Physics.Arcade.Events.OVERLAP, this.overlapHandler, this)
   }
-  overlapHandler(player, object){
-    if(player != this)
-      return;
-    if((object instanceof(HittableObject)) && this.isAttacking && !this.attackedObjects.includes(object))
-    {
-      let direction = object.body.position.clone().subtract(this.body.position).normalize();
-      object.body.velocity.add(direction.scale(Player.KNOCKBACK_STRENGTH));
+  overlapHandler(player, object) {
+    if (player != this) return
+    if (object instanceof HittableObject && this.isAttacking && !this.attackedObjects.includes(object)) {
+      let direction = object.body.position.clone().subtract(this.body.position).normalize()
+      object.body.velocity.add(direction.scale(Player.KNOCKBACK_STRENGTH))
       this.attackedObjects.push(object)
-      object.Hit(1);
+      object.Hit(1)
     }
-  };
+  }
 
   Hit(damage: number): void {
     if (this.isInvulnerable) return
@@ -138,9 +132,8 @@ export default class Player extends HittableObject {
       duration: Player.INVULNERABLE_TIME / (Player.INVULNERABLE_BLINKS * 2),
       repeat: Player.INVULNERABLE_BLINKS,
       yoyo: true,
-      onComplete(tween, targets)
-      {
-        targets.forEach(e => e.alpha = 1)
+      onComplete(tween, targets) {
+        targets.forEach(e => (e.alpha = 1))
       }
     })
   }
