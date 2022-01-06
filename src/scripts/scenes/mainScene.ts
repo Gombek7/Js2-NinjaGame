@@ -6,6 +6,9 @@ import HearthsUI from '../objects/HearthsUI'
 import Explosion from '../objects/Explosion'
 import EnemyWithSword from '../objects/enemyWithSword'
 import Saw from '../objects/Saw'
+import PickableHearth from '../objects/PickableHearth'
+import HearthCrate from '../objects/HearthCrate'
+import UpdateList from './UpdateList'
 import ScoreText from '../objects/scoreText'
 import GameOverText from '../objects/gameOverText'
 
@@ -23,10 +26,12 @@ export default class MainScene extends Phaser.Scene {
   enemiesWithSword
   platforms
   saws
+  hearths
   fireballs
   boom
   intervalEnemies
   intervalFireball
+  test_crate
   constructor() {
     super({ key: 'MainScene' })
   }
@@ -80,6 +85,15 @@ export default class MainScene extends Phaser.Scene {
     this.physics.add.overlap(this.saws, this.player)
     this.physics.add.overlap(this.saws, this.enemiesWithSword)
 
+    //TODO: spawn healths on kill enemies and add overlap to player
+    this.hearths = []
+    this.hearths.push(new PickableHearth(this, 300, 300))
+    this.physics.add.overlap(this.hearths, this.player)
+
+    this.test_crate = new HearthCrate(this, 50, 50)
+    this.physics.add.collider(this.test_crate, this.platforms)
+    this.physics.add.overlap(this.player, this.test_crate)
+
     this.physics.add.collider(this.player, this.platforms)
     this.physics.add.collider(this.enemiesWithSword, this.platforms)
   }
@@ -126,5 +140,6 @@ export default class MainScene extends Phaser.Scene {
       this.scoreText.updatePosition()
       new GameOverText(this)
     }
+    // UpdateList.forEach(o => o.update(time, delta))
   }
 }
