@@ -60,28 +60,11 @@ export default class MainScene extends Phaser.Scene {
     }, 5000)
 
     this.platforms = this.physics.add.staticGroup()
-    for (let i = 0; i < 30; i++) {
-      this.platforms.create(
-        platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)],
-        platformsHeights[Math.floor(Math.random() * platformsHeights.length)],
-        'platform'
-      )
-    }
-
-    this.platforms
-      .getChildren()
-      .forEach(c => (c.setScale(0.8).setOrigin(0).refreshBody().body.checkCollision.down = false))
+    this.addPlatforms()
 
     this.saws = []
-    for (let i = 0; i < 10; i++) {
-      this.saws.push(
-        new Saw(
-          this,
-          platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)],
-          platformsHeights[Math.floor(Math.random() * platformsHeights.length)]
-        )
-      )
-    }
+    this.addSaws()
+
     this.physics.add.overlap(this.saws, this.player)
     this.physics.add.overlap(this.saws, this.enemiesWithSword)
 
@@ -119,16 +102,37 @@ export default class MainScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.enemiesWithSword)
   }
 
+  addPlatforms() {
+    for (let i = 0; i < 30; i++) {
+      this.platforms.create(
+        platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)],
+        platformsHeights[Math.floor(Math.random() * platformsHeights.length)],
+        'platform'
+      )
+    }
+    this.platforms
+      .getChildren()
+      .forEach(c => (c.setScale(0.8).setOrigin(0).refreshBody().body.checkCollision.down = false))
+  }
+
+  addSaws() {
+    for (let i = 0; i < 10; i++) {
+      this.saws.push(
+        new Saw(
+          this,
+          platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)],
+          platformsHeights[Math.floor(Math.random() * platformsHeights.length)]
+        )
+      )
+    }
+  }
+
   update(time, delta) {
-    this.player.update(time, delta)
-    this.enemiesWithSword.forEach(enemy => {
-      enemy.update(time, delta)
-    })
-    this.saws.forEach(saw => {
-      saw.update(time, delta)
-    })
-    this.fpsText.update()
-    this.scoreText.update()
+    UpdateList.forEach(o => o.update(time, delta))
+    if (this.scoreText.score % 10 == 0 && this.scoreText.score != 0) {
+      console.log('a')
+      //TODO RESET MAP(platforms and saws)
+    }
     if (this.player.CurrentHP == 0) {
       clearInterval(this.intervalFireball)
       clearInterval(this.intervalEnemies)
@@ -140,6 +144,5 @@ export default class MainScene extends Phaser.Scene {
       this.scoreText.updatePosition()
       new GameOverText(this)
     }
-    // UpdateList.forEach(o => o.update(time, delta))
   }
 }

@@ -1,5 +1,3 @@
-import { Time } from 'phaser'
-import Explosion from './Explosion'
 import HearthsUI from './HearthsUI'
 import HittableObject from './HittableObject'
 
@@ -74,7 +72,7 @@ export default class Player extends HittableObject {
 
     //Hp config
     this.MaxHP = 10
-    this.CurrentHP = 1
+    this.CurrentHP = 10
     this.hideHealthbar()
     this.#hearthsUI = new HearthsUI(this.scene)
     this.#hearthsUI.update(this.CurrentHP, this.MaxHP)
