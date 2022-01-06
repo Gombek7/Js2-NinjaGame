@@ -1,3 +1,4 @@
+import UpdateList from "../scenes/UpdateList";
 import HealthBar from "./HealthBar";
 
 export default class HittableObject extends Phaser.Physics.Arcade.Sprite {
@@ -9,6 +10,7 @@ export default class HittableObject extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, texture);
 		scene.add.existing(this);
 		scene.physics.add.existing(this);
+        UpdateList.push(this);
 
         this.#MaxHP = 1;
         this.#CurrentHP = 1;
@@ -133,6 +135,10 @@ export default class HittableObject extends Phaser.Physics.Arcade.Sprite {
 
     destroy(fromScene?: boolean): void {
         this.hideHealthbar();
+
+        const index = UpdateList.indexOf(this);
+		if (index > -1)
+			UpdateList.splice(index, 1);
         super.destroy(fromScene);
     }
 }

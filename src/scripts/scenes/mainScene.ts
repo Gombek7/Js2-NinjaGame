@@ -8,6 +8,7 @@ import EnemyWithSword from '../objects/enemyWithSword'
 import Saw from '../objects/Saw'
 import PickableHearth from '../objects/PickableHearth'
 import HearthCrate from '../objects/HearthCrate'
+import UpdateList from './UpdateList'
 
 const platformsHeights = [130, 230, 330, 450]
 const platoformsWidth = [
@@ -92,17 +93,6 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update(time, delta) {
-    this.player.update(time, delta)
-    this.enemiesWithSword.forEach(enemy => {
-      enemy.update(time, delta);
-    });
-    this.saws.forEach(saw => {
-      saw.update(time, delta);
-    });
-    this.hearths.forEach(hearth => {
-      hearth.update(time, delta);
-    });
-    this.fpsText.update()
-    this.test_crate?.update(time, delta);
+    UpdateList.forEach(o => o.update(time, delta));
   }
 }

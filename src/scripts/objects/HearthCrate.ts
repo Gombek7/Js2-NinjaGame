@@ -1,4 +1,5 @@
 import HittableObject from './HittableObject'
+import PickableHearth from './PickableHearth';
 
 export default class HearthCrate extends HittableObject {
     constructor(scene: Phaser.Scene, x, y) {
@@ -23,6 +24,7 @@ export default class HearthCrate extends HittableObject {
 
     onDead(){
         this.isHealthbarHidden = true;
+        new PickableHearth(this.scene, this.x, this.y);
         this.scene.tweens.add({
             targets: this,
             alpha:0,
