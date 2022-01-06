@@ -6,6 +6,8 @@ import HearthsUI from '../objects/HearthsUI'
 import Explosion from '../objects/Explosion'
 import EnemyWithSword from '../objects/enemyWithSword'
 import Saw from '../objects/Saw'
+import ScoreText from '../objects/scoreText'
+import GameOverText from '../objects/gameOverText'
 
 const platformsHeights = [130, 230, 330, 450]
 const platoformsWidth = [
@@ -15,12 +17,16 @@ const platoformsWidth = [
 
 export default class MainScene extends Phaser.Scene {
   fpsText
+  scoreText
+  gameOverText
   player
   enemiesWithSword
   platforms
   saws
   fireballs
   boom
+  intervalEnemies
+  intervalFireball
   constructor() {
     super({ key: 'MainScene' })
   }
@@ -28,28 +34,25 @@ export default class MainScene extends Phaser.Scene {
   create() {
     let background = this.add.tileSprite(0, 0, 1920, 600, 'background')
     this.fpsText = new FpsText(this)
+    this.scoreText = new ScoreText(this)
     background.setOrigin(0)
     background.setScrollFactor(0.6) //fixedToCamera = true;
     this.cameras.main.setBounds(0, 0, DEFAULT_WIDTH + 1840, DEFAULT_HEIGHT)
-    this.physics.world.setBounds(0, 0, DEFAULT_WIDTH + 1840, DEFAULT_HEIGHT,true,true,false,true)
+    this.physics.world.setBounds(0, 0, DEFAULT_WIDTH + 1840, DEFAULT_HEIGHT, true, true, false, true)
 
     this.player = new Player(this, 50, 100)
 
     this.fireballs = []
-    for (let i = 0; i < 6; i++) {
-      this.fireballs.push(
-        new Fireball(this, 1900, platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50)
-      )
-      this.physics.add.overlap(this.fireballs[i], this.player);
-    }
+    this.addFireballs()
+    this.intervalFireball = setInterval(() => {
+      this.addFireballs()
+    }, 5000)
 
     this.enemiesWithSword = []
-    for (let i = 0; i < 4; i++) {
-      this.enemiesWithSword.push(
-        new EnemyWithSword(this, platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)], 0)
-      )
-      this.physics.add.overlap(this.enemiesWithSword[i], this.player)
-    }
+    this.addEnemiesWithSword()
+    this.intervalEnemies = setInterval(() => {
+      this.addEnemiesWithSword()
+    }, 5000)
 
     this.platforms = this.physics.add.staticGroup()
     for (let i = 0; i < 30; i++) {
@@ -59,33 +62,69 @@ export default class MainScene extends Phaser.Scene {
         'platform'
       )
     }
-    this.platforms.getChildren().forEach(c => c.setScale(0.8).setOrigin(0).refreshBody().body.checkCollision.down = false)
 
-    this.saws = [];
+    this.platforms
+      .getChildren()
+      .forEach(c => (c.setScale(0.8).setOrigin(0).refreshBody().body.checkCollision.down = false))
+
+    this.saws = []
     for (let i = 0; i < 10; i++) {
       this.saws.push(
         new Saw(
           this,
           platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)],
-          platformsHeights[Math.floor(Math.random() * platformsHeights.length)],
-        ));
+          platformsHeights[Math.floor(Math.random() * platformsHeights.length)]
+        )
+      )
     }
-    this.physics.add.overlap(this.saws, this.player);
-    this.physics.add.overlap(this.saws, this.enemiesWithSword);
+    this.physics.add.overlap(this.saws, this.player)
+    this.physics.add.overlap(this.saws, this.enemiesWithSword)
 
     this.physics.add.collider(this.player, this.platforms)
     this.physics.add.collider(this.enemiesWithSword, this.platforms)
+  }
+
+  addFireballs() {
+    for (let i = 0; i < 6; i++) {
+      this.fireballs.push(
+        new Fireball(this, 1900, platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50)
+      )
+    }
+    this.physics.add.overlap(this.fireballs, this.player)
+  }
+
+  addEnemiesWithSword() {
+    for (let i = 0; i < 4; i++) {
+      this.enemiesWithSword.push(
+        new EnemyWithSword(this, platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)], 0, () => {
+          this.scoreText.increaseScore()
+        })
+      )
+    }
+    this.physics.add.overlap(this.enemiesWithSword, this.player)
     this.physics.add.overlap(this.player, this.enemiesWithSword)
   }
 
   update(time, delta) {
     this.player.update(time, delta)
     this.enemiesWithSword.forEach(enemy => {
-      enemy.update(time, delta);
-    });
+      enemy.update(time, delta)
+    })
     this.saws.forEach(saw => {
-      saw.update(time, delta);
-    });
+      saw.update(time, delta)
+    })
     this.fpsText.update()
+    this.scoreText.update()
+    if (this.player.CurrentHP == 0) {
+      clearInterval(this.intervalFireball)
+      clearInterval(this.intervalEnemies)
+      this.platforms.getChildren().forEach(c => c.setScale(0))
+      this.saws.forEach(c => {
+        c.destroy()
+      })
+      this.scene.pause()
+      this.scoreText.updatePosition()
+      new GameOverText(this)
+    }
   }
 }
