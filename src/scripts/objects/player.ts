@@ -5,6 +5,7 @@ import HittableObject from './HittableObject'
 
 export default class Player extends HittableObject {
   isAttacking: boolean
+  // hit objects once per attack
   attackedObjects: Object[]
   isInvulnerable: boolean
   static INVULNERABLE_TIME = 500

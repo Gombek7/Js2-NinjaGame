@@ -3,7 +3,10 @@ import HittableObject from './HittableObject'
 
 export default class EnemyWithSword extends HittableObject {
   isAttacking: boolean
+  // hit objects once per attack
+  attackedObjects: Object[]
   attackInterval
+  static KNOCKBACK_STRENGTH = 300;
   constructor(scene: Phaser.Scene, x, y) {
     super(scene, x, y, 'ninja')
     this.setDisplaySize(90, 90)
@@ -31,6 +34,7 @@ export default class EnemyWithSword extends HittableObject {
     })
 
     this.isAttacking = false
+    this.attackedObjects = [];
 
     this.on('animationstart', (animation, frame) => {
       if (animation.key === 'enemy_attack') {
@@ -62,6 +66,7 @@ export default class EnemyWithSword extends HittableObject {
 
     this.on('animationcomplete-enemy_attack', (animation, frame) => {
       this.isAttacking = false
+      this.attackedObjects = []
       this.anims.play('stay', true)
       this.#resetHitbox()
     })
@@ -84,9 +89,11 @@ export default class EnemyWithSword extends HittableObject {
   overlapHandler(enemy, object){
     if(enemy != this)
       return;
-    if(object instanceof(HittableObject) && this.isAttacking)
+    if(object instanceof(HittableObject) && this.isAttacking && !this.attackedObjects.includes(object))
     {
-      object?.setVelocityX(-100);
+      let direction = object.body.position.clone().subtract(this.body.position).normalize();
+      object.body.velocity.add(direction.scale(EnemyWithSword.KNOCKBACK_STRENGTH));
+      this.attackedObjects.push(object)
       object.Hit(1);
     }
   };
