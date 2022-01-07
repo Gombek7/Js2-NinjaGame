@@ -82,10 +82,10 @@ export default class MainScene extends Phaser.Scene {
   addFireballs() {
     platformsHeights.forEach(h => {
       if (Math.random() > 0.4)
-        new Fireball(this, DEFAULT_WIDTH + 1850, h + 50)
+        new Fireball(this, DEFAULT_WIDTH + 1850 - Math.random()*200, h + 50)
     })
     if (Math.random() > 0.4)
-      new Fireball(this, DEFAULT_WIDTH + 1850, 80)
+      new Fireball(this, DEFAULT_WIDTH + 1850 - Math.random()*200, 80)
     /*
     for (let i = 0; i < 6; i++) {
         new Fireball(
