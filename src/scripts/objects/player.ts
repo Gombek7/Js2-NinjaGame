@@ -114,7 +114,7 @@ export default class Player extends HittableObject {
       object.Hit(1)
     }
   }
-
+  
   set MaxHP(value: number) {
     super.MaxHP = value
     this.#hearthsUI?.update(this.CurrentHP, this.MaxHP)
@@ -122,15 +122,15 @@ export default class Player extends HittableObject {
   get MaxHP(): number {
     return super.MaxHP
   }
-
+  
   set CurrentHP(value: number) {
-    super.CurrentHP = value
+    super.CurrentHP = value;
     this.#hearthsUI?.update(this.CurrentHP, this.MaxHP)
   }
   get CurrentHP(): number {
     return super.CurrentHP
   }
-
+  
   Hit(damage: number): void {
     if (this.isInvulnerable || this.isAttacking) return
     super.Hit(damage)
@@ -158,6 +158,7 @@ export default class Player extends HittableObject {
 
   destroy(fromScene?: boolean): void {
     PlayerLayer.remove(this)
+    this.#hearthsUI.destroy()
     super.destroy(fromScene)
   }
 }

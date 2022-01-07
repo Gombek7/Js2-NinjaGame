@@ -39,7 +39,6 @@ export default class CollisionLayer {
 
     remove(object: Phaser.GameObjects.GameObject)
     {
-        console.log(object);
         const index = this.objects.indexOf(object);
 		if (index > -1)
         {

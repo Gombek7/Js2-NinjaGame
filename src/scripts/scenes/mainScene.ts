@@ -35,10 +35,6 @@ export default class MainScene extends Phaser.Scene {
   player
   enemiesWithSword
   platforms
-  saws
-  fireballs
-  boom
-  hearths
   intervalEnemies
   intervalFireball
   constructor() {
@@ -63,7 +59,6 @@ export default class MainScene extends Phaser.Scene {
 
     this.player = new Player(this, 50, 100)
 
-    this.fireballs = []
     this.addFireballs()
     this.intervalFireball = setInterval(() => {
       this.addFireballs()
@@ -78,26 +73,22 @@ export default class MainScene extends Phaser.Scene {
     this.platforms = this.physics.add.staticGroup()
     this.addPlatforms()
 
-    this.saws = []
     this.addSaws()
 
     //TODO: spawn crates
-    this.hearths = []
-    this.hearths.push(new PickableHearth(this, 300, 300))
-    this.hearths.push(new HearthCrate(this, 50, 50))
-    this.hearths.push(new PickableGoldHearth(this, 500, 300))
-    this.hearths.push(new GoldHearthCrate(this, 250, 50))
+    new PickableHearth(this, 300, 300)
+    new HearthCrate(this, 50, 50)
+    new PickableGoldHearth(this, 500, 300)
+    new GoldHearthCrate(this, 250, 50)
   }
 
   addFireballs() {
     for (let i = 0; i < 6; i++) {
-      this.fireballs.push(
         new Fireball(
           this,
           DEFAULT_WIDTH + 1850,
           platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50
         )
-      )
     }
   }
 
@@ -125,21 +116,16 @@ export default class MainScene extends Phaser.Scene {
       c.body.checkCollision.left = false
       c.body.checkCollision.right = false
       PlatformsLayer.add(c)
-      c.on('destroy', () => {
-        PlatformsLayer.remove(c)
-      })
     })
   }
 
   addSaws() {
     for (let i = 0; i < 10; i++) {
-      this.saws.push(
         new Saw(
           this,
           platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)],
           platformsHeights[Math.floor(Math.random() * platformsHeights.length)]
         )
-      )
     }
   }
 
@@ -149,33 +135,28 @@ export default class MainScene extends Phaser.Scene {
       clearInterval(this.intervalEnemies)
       this.player.destroy()
       this.platforms.getChildren().forEach(c => {
+        PlatformsLayer.remove(c)
         c.destroy()
       })
-      this.saws.forEach(c => {
-        c.destroy()
-      })
+      TrapsLayer.objects.forEach(c => c.destroy())
+      PickablesLayer.objects.forEach(c => c.destroy())
+      DestroyablesLayer.objects.forEach(c =>  c.destroy())
       this.enemiesWithSword.forEach(c => {
         c.destroy()
       })
-      this.fireballs.forEach(c => {
-        c.destroy()
-      })
-      this.hearths.forEach(c => {
-        c.destroy()
-      })
-      this.scene.pause()
+      //this.scene.pause() // gameobjects has no time to destroy themselves
       this.scoreText.updatePosition()
       new GameOverText(this)
     } else {
       UpdateList.forEach(o => o.update(time, delta))
       if (this.scoreText.score % 10 == 0 && this.scoreText.score != 0) {
         this.platforms.getChildren().forEach(c => {
+          PlatformsLayer.remove(c)
           c.destroy()
         })
-        this.saws.forEach(saw => {
-          saw.destroy()
+        TrapsLayer.objects.forEach(c => {
+          c.destroy()
         })
-        this.player.destroy()
         this.addPlatforms()
         this.addSaws()
         this.scoreText.increaseScore()

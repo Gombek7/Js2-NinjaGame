@@ -41,7 +41,6 @@ export default class Fireball extends Phaser.Physics.Arcade.Sprite {
   worldBoundsHandler(body){
     if(body.gameObject !== this)
       return;
-    console.log(body);
     new Explosion(this.scene, this.x, this.y);
     this.destroy();
   }

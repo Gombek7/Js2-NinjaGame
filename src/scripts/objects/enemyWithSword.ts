@@ -7,6 +7,7 @@ export default class EnemyWithSword extends HittableObject {
   updateScore
   // hit objects once per attack
   attackedObjects: Object[]
+  firstAttackTimeout
   attackInterval
   static KNOCKBACK_STRENGTH = 300
   constructor(scene: Phaser.Scene, x, y, updateScore) {
@@ -75,7 +76,7 @@ export default class EnemyWithSword extends HittableObject {
     })
 
     this.anims.play('stay', true)
-    setTimeout(() => {
+    this.firstAttackTimeout = setTimeout(() => {
       this.attackInterval = setInterval(() => {
         this.anims.play('enemy_attack', true)
       }, 2000)
@@ -101,6 +102,7 @@ export default class EnemyWithSword extends HittableObject {
   }
 
   destroy() {
+    clearTimeout(this.firstAttackTimeout);
     clearInterval(this.attackInterval)
     EnemiesLayer.remove(this)
     super.destroy()
