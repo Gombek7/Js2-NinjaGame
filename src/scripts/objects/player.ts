@@ -10,7 +10,7 @@ export default class Player extends HittableObject {
   static INVULNERABLE_TIME = 500
   static INVULNERABLE_BLINKS = 3
   static VELOCITY_TO_STOP = 20
-  static STOP_FACTOR = 0.055
+  static STOP_FACTOR = 10
   static KNOCKBACK_STRENGTH = 300
   #hearthsUI: HearthsUI
   #cursors
@@ -92,7 +92,7 @@ export default class Player extends HittableObject {
       if (!this.isAttacking) this.anims.play('run', true)
       this.flipX = false
     } else {
-      this.setVelocityX(this.body.velocity.x * delta * Player.STOP_FACTOR)
+      this.setVelocityX(this.body.velocity.x * (Player.STOP_FACTOR/delta))
       if (Math.abs(this.body.velocity.x) < Player.VELOCITY_TO_STOP) this.setVelocityX(0)
       if (!this.isAttacking) this.anims.play('idle', true)
     }

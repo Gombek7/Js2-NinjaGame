@@ -11,7 +11,6 @@ export default class Saw extends Phaser.Physics.Arcade.Sprite{
         super(scene, x, y, 'saw');
         scene.add.existing(this);
 		scene.physics.add.existing(this);
-        UpdateList.push(this);
         TrapsLayer.add(this);
 
         const body = this.body as Phaser.Physics.Arcade.Body; //typescript hack
@@ -44,10 +43,6 @@ export default class Saw extends Phaser.Physics.Arcade.Sprite{
     destroy(){
         this.scene.physics.world.off(Phaser.Physics.Arcade.Events.OVERLAP, this.overlapHandler, this)
         
-        const index = UpdateList.indexOf(this);
-		if (index > -1)
-			UpdateList.splice(index, 1);
-
         TrapsLayer.remove(this);
         super.destroy();
     }
