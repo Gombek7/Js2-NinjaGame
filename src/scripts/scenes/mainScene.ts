@@ -83,13 +83,20 @@ export default class MainScene extends Phaser.Scene {
   }
 
   addFireballs() {
+    platformsHeights.forEach(h => {
+      if (Math.random() > 0.4)
+        new Fireball(this, DEFAULT_WIDTH + 1850, h + 50)
+    })
+    if (Math.random() > 0.4)
+      new Fireball(this, DEFAULT_WIDTH + 1850, 80)
+    /*
     for (let i = 0; i < 6; i++) {
         new Fireball(
           this,
           DEFAULT_WIDTH + 1850,
           platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50
         )
-    }
+    }*/
   }
 
   addEnemiesWithSword() {
@@ -121,11 +128,11 @@ export default class MainScene extends Phaser.Scene {
 
   addSaws() {
     for (let i = 0; i < 10; i++) {
-        new Saw(
-          this,
-          platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)],
-          platformsHeights[Math.floor(Math.random() * platformsHeights.length)]
-        )
+      new Saw(
+        this,
+        platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)],
+        platformsHeights[Math.floor(Math.random() * platformsHeights.length)]
+      )
     }
   }
 
@@ -140,7 +147,7 @@ export default class MainScene extends Phaser.Scene {
       })
       TrapsLayer.objects.forEach(c => c.destroy())
       PickablesLayer.objects.forEach(c => c.destroy())
-      DestroyablesLayer.objects.forEach(c =>  c.destroy())
+      DestroyablesLayer.objects.forEach(c => c.destroy())
       this.enemiesWithSword.forEach(c => {
         c.destroy()
       })
