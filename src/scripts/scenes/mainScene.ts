@@ -29,11 +29,14 @@ const platoformsWidth = [
 ]
 
 export default class MainScene extends Phaser.Scene {
+  static SCORE_PER_ROUND = 10
+  static ENEMIES_SPAWN_COUNT = 4
+  static ENEMIES_SPAWN_INTERVAL = 20000
+
   fpsText
   scoreText
   gameOverText
   player
-  enemiesWithSword
   platforms
   intervalEnemies
   intervalFireball
@@ -64,11 +67,10 @@ export default class MainScene extends Phaser.Scene {
       this.addFireballs()
     }, 5000)
 
-    this.enemiesWithSword = []
     this.addEnemiesWithSword()
     this.intervalEnemies = setInterval(() => {
       this.addEnemiesWithSword()
-    }, 5000)
+    }, MainScene.ENEMIES_SPAWN_INTERVAL)
 
     this.platforms = this.physics.add.staticGroup()
     this.addPlatforms()
@@ -100,12 +102,10 @@ export default class MainScene extends Phaser.Scene {
   }
 
   addEnemiesWithSword() {
-    for (let i = 0; i < 4; i++) {
-      this.enemiesWithSword.push(
-        new EnemyWithSword(this, platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)], 0, () => {
-          this.scoreText.increaseScore()
-        })
-      )
+    for (let i = 0; i < MainScene.ENEMIES_SPAWN_COUNT; i++) {
+      new EnemyWithSword(this, platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)], 0, () => {
+        this.scoreText.increaseScore()
+      })
     }
   }
 
@@ -134,6 +134,9 @@ export default class MainScene extends Phaser.Scene {
         platformsHeights[Math.floor(Math.random() * platformsHeights.length)]
       )
     }
+
+    for(let i = 10; i < DEFAULT_WIDTH + 1840; i+=150)
+      new Saw(this, i, DEFAULT_HEIGHT)
   }
 
   update(time, delta) {
@@ -148,15 +151,13 @@ export default class MainScene extends Phaser.Scene {
       TrapsLayer.objects.forEach(c => c.destroy())
       PickablesLayer.objects.forEach(c => c.destroy())
       DestroyablesLayer.objects.forEach(c => c.destroy())
-      this.enemiesWithSword.forEach(c => {
-        c.destroy()
-      })
+      EnemiesLayer.objects.forEach(c => c.destroy())
       //this.scene.pause() // gameobjects has no time to destroy themselves
       this.scoreText.updatePosition()
       new GameOverText(this)
     } else {
       UpdateList.forEach(o => o.update(time, delta))
-      if (this.scoreText.score % 10 == 0 && this.scoreText.score != 0) {
+      if (this.scoreText.score % MainScene.SCORE_PER_ROUND == 0 && this.scoreText.score != 0) {
         this.platforms.getChildren().forEach(c => {
           PlatformsLayer.remove(c)
           c.destroy()
