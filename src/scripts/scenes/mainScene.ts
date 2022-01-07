@@ -76,12 +76,7 @@ export default class MainScene extends Phaser.Scene {
     this.addPlatforms()
 
     this.addSaws()
-
-    //TODO: spawn crates
-    new PickableHearth(this, 300, 300)
-    new HearthCrate(this, 50, 50)
-    new PickableGoldHearth(this, 500, 300)
-    new GoldHearthCrate(this, 250, 50)
+    this.addHearths()
   }
 
   addFireballs() {
@@ -139,6 +134,26 @@ export default class MainScene extends Phaser.Scene {
       new Saw(this, i, DEFAULT_HEIGHT)
   }
 
+  addHearths()
+  {
+    new GoldHearthCrate(
+      this, 
+      platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)], 
+      platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50
+      )
+    
+    new HearthCrate(
+      this, 
+      platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)], 
+      platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50
+      )
+    
+    new HearthCrate(
+      this, 
+      platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)], 
+      platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50
+      )
+  }
   update(time, delta) {
     if (this.player.CurrentHP == 0) {
       clearInterval(this.intervalFireball)
@@ -167,6 +182,7 @@ export default class MainScene extends Phaser.Scene {
         })
         this.addPlatforms()
         this.addSaws()
+        this.addHearths()
         this.scoreText.increaseScore()
         console.log('a')
         //TODO RESET MAP(platforms and saws)
