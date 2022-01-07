@@ -12,6 +12,8 @@ import UpdateList from './UpdateList'
 import { EnemiesLayer, TrapsLayer, PickablesLayer, PlayerLayer, DestroyablesLayer, PlatformsLayer } from '../utils/CollisionLayers'
 import ScoreText from '../objects/scoreText'
 import GameOverText from '../objects/gameOverText'
+import PickableGoldHearth from '../objects/PickableGoldHearth'
+import GoldHearthCrate from '../objects/GoldHearthCrate'
 
 const platformsHeights = [130, 230, 330, 450]
 const platoformsWidth = [
@@ -74,12 +76,14 @@ export default class MainScene extends Phaser.Scene {
     //TODO: spawn crates
     new PickableHearth(this, 300, 300)
     new HearthCrate(this, 50, 50)
+    new PickableGoldHearth(this, 500, 300)
+    new GoldHearthCrate(this, 250, 50)
   }
 
   addFireballs() {
     for (let i = 0; i < 6; i++) {
       this.fireballs.push(
-        new Fireball(this, 1900, platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50)
+        new Fireball(this, DEFAULT_WIDTH + 1850, platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50)
       )
     }
   }

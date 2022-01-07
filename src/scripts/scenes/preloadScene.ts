@@ -10,8 +10,10 @@ export default class PreloadScene extends Phaser.Scene {
     //sprites
     this.load.image('platform', 'assets/sprites/block.png')
     this.load.image('hearth', 'assets/sprites/hearth.png')
+    this.load.image('gold_hearth', 'assets/sprites/gold_hearth.png')
     this.load.image('empty_hearth', 'assets/sprites/empty_hearth.png')
     this.load.image('hearth_crate', 'assets/sprites/hearth_crate.png')
+    this.load.image('gold_hearth_crate', 'assets/sprites/gold_hearth_crate.png')
     this.load.image('saw', 'assets/sprites/saw.png')
 
     //spritessheets

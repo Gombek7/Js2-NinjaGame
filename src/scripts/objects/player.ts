@@ -73,11 +73,10 @@ export default class Player extends HittableObject {
     this.#cursors = scene.input.keyboard.createCursorKeys()
 
     //Hp config
-    this.MaxHP = 10
-    this.CurrentHP = 10
-    this.hideHealthbar()
     this.#hearthsUI = new HearthsUI(this.scene)
-    this.#hearthsUI.update(this.CurrentHP, this.MaxHP)
+    this.MaxHP = 5
+    this.CurrentHP = 5
+    this.hideHealthbar()
   }
 
   update(time, delta) {
@@ -115,9 +114,25 @@ export default class Player extends HittableObject {
       object.Hit(1)
     }
   }
-
+  
+  set MaxHP(value: number) {
+    super.MaxHP = value
+    this.#hearthsUI?.update(this.CurrentHP, this.MaxHP)
+  }
+  get MaxHP(): number {
+    return super.MaxHP
+  }
+  
+  set CurrentHP(value: number) {
+    super.CurrentHP = value;
+    this.#hearthsUI?.update(this.CurrentHP, this.MaxHP)
+  }
+  get CurrentHP(): number {
+    return super.CurrentHP
+  }
+  
   Hit(damage: number): void {
-    if (this.isInvulnerable) return
+    if (this.isInvulnerable || this.isAttacking) return
     super.Hit(damage)
     this.#hearthsUI.update(this.CurrentHP, this.MaxHP)
     this.isInvulnerable = true
