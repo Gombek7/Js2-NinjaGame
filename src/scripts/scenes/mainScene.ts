@@ -81,11 +81,9 @@ export default class MainScene extends Phaser.Scene {
 
   addFireballs() {
     platformsHeights.forEach(h => {
-      if (Math.random() > 0.4)
-        new Fireball(this, DEFAULT_WIDTH + 1850 - Math.random()*200, h + 50)
+      if (Math.random() > 0.4) new Fireball(this, DEFAULT_WIDTH + 1850 - Math.random() * 200, h + 50)
     })
-    if (Math.random() > 0.4)
-      new Fireball(this, DEFAULT_WIDTH + 1850 - Math.random()*200, 80)
+    if (Math.random() > 0.4) new Fireball(this, DEFAULT_WIDTH + 1850 - Math.random() * 200, 80)
     /*
     for (let i = 0; i < 6; i++) {
         new Fireball(
@@ -130,29 +128,27 @@ export default class MainScene extends Phaser.Scene {
       )
     }
 
-    for(let i = 10; i < DEFAULT_WIDTH + 1840; i+=150)
-      new Saw(this, i, DEFAULT_HEIGHT)
+    for (let i = 10; i < DEFAULT_WIDTH + 1840; i += 150) new Saw(this, i, DEFAULT_HEIGHT)
   }
 
-  addHearths()
-  {
+  addHearths() {
     new GoldHearthCrate(
-      this, 
-      platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)], 
+      this,
+      platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)],
       platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50
-      )
-    
+    )
+
     new HearthCrate(
-      this, 
-      platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)], 
+      this,
+      platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)],
       platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50
-      )
-    
+    )
+
     new HearthCrate(
-      this, 
-      platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)], 
+      this,
+      platoformsWidth[Math.floor(Math.random() * platoformsWidth.length)],
       platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50
-      )
+    )
   }
   update(time, delta) {
     if (this.player.CurrentHP == 0) {
@@ -167,7 +163,6 @@ export default class MainScene extends Phaser.Scene {
       PickablesLayer.objects.forEach(c => c.destroy())
       DestroyablesLayer.objects.forEach(c => c.destroy())
       EnemiesLayer.objects.forEach(c => c.destroy())
-      //this.scene.pause() // gameobjects has no time to destroy themselves
       this.scoreText.updatePosition()
       new GameOverText(this)
     } else {
@@ -184,8 +179,6 @@ export default class MainScene extends Phaser.Scene {
         this.addSaws()
         this.addHearths()
         this.scoreText.increaseScore()
-        console.log('a')
-        //TODO RESET MAP(platforms and saws)
       }
     }
   }
