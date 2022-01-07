@@ -100,10 +100,10 @@ export default class EnemyWithSword extends HittableObject {
     }
   }
 
-  boom() {
-    new Explosion(this.scene, this.x, this.y)
+  destroy() {
     clearInterval(this.attackInterval)
-    this.destroy()
+    EnemiesLayer.remove(this)
+    super.destroy()
   }
 
   onDead() {
@@ -111,8 +111,8 @@ export default class EnemyWithSword extends HittableObject {
     this.updateScore()
     this.setDrag(0)
     clearInterval(this.attackInterval)
-    EnemiesLayer.remove(this);
-    this.destroy()
+    EnemiesLayer.remove(this)
+    super.destroy()
   }
   update(time, delta) {
     const body = this.body as Phaser.Physics.Arcade.Body //typescript hack for onFloor() function

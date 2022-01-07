@@ -9,7 +9,14 @@ import Saw from '../objects/Saw'
 import PickableHearth from '../objects/PickableHearth'
 import HearthCrate from '../objects/HearthCrate'
 import UpdateList from './UpdateList'
-import { EnemiesLayer, TrapsLayer, PickablesLayer, PlayerLayer, DestroyablesLayer, PlatformsLayer } from '../utils/CollisionLayers'
+import {
+  EnemiesLayer,
+  TrapsLayer,
+  PickablesLayer,
+  PlayerLayer,
+  DestroyablesLayer,
+  PlatformsLayer
+} from '../utils/CollisionLayers'
 import ScoreText from '../objects/scoreText'
 import GameOverText from '../objects/gameOverText'
 import PickableGoldHearth from '../objects/PickableGoldHearth'
@@ -31,6 +38,7 @@ export default class MainScene extends Phaser.Scene {
   saws
   fireballs
   boom
+  hearths
   intervalEnemies
   intervalFireball
   constructor() {
@@ -46,12 +54,12 @@ export default class MainScene extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, DEFAULT_WIDTH + 1840, DEFAULT_HEIGHT)
     this.physics.world.setBounds(0, 0, DEFAULT_WIDTH + 1840, DEFAULT_HEIGHT, true, true, false, true)
 
-    PlayerLayer.setScene(this);
-    PickablesLayer.setScene(this);
-    EnemiesLayer.setScene(this);
-    TrapsLayer.setScene(this);
-    DestroyablesLayer.setScene(this);
-    PlatformsLayer.setScene(this);
+    PlayerLayer.setScene(this)
+    PickablesLayer.setScene(this)
+    EnemiesLayer.setScene(this)
+    TrapsLayer.setScene(this)
+    DestroyablesLayer.setScene(this)
+    PlatformsLayer.setScene(this)
 
     this.player = new Player(this, 50, 100)
 
@@ -74,16 +82,21 @@ export default class MainScene extends Phaser.Scene {
     this.addSaws()
 
     //TODO: spawn crates
-    new PickableHearth(this, 300, 300)
-    new HearthCrate(this, 50, 50)
-    new PickableGoldHearth(this, 500, 300)
-    new GoldHearthCrate(this, 250, 50)
+    this.hearths = []
+    this.hearths.push(new PickableHearth(this, 300, 300))
+    this.hearths.push(new HearthCrate(this, 50, 50))
+    this.hearths.push(new PickableGoldHearth(this, 500, 300))
+    this.hearths.push(new GoldHearthCrate(this, 250, 50))
   }
 
   addFireballs() {
     for (let i = 0; i < 6; i++) {
       this.fireballs.push(
-        new Fireball(this, DEFAULT_WIDTH + 1850, platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50)
+        new Fireball(
+          this,
+          DEFAULT_WIDTH + 1850,
+          platformsHeights[Math.floor(Math.random() * platformsHeights.length)] + 50
+        )
       )
     }
   }
@@ -106,18 +119,16 @@ export default class MainScene extends Phaser.Scene {
         'platform'
       )
     }
-    this.platforms
-      .getChildren()
-      .forEach(c => {
-        c.setScale(0.8).setOrigin(0).refreshBody()
-        c.body.checkCollision.down = false
-        c.body.checkCollision.left = false
-        c.body.checkCollision.right = false
-        PlatformsLayer.add(c)
-        c.on('destroy',()=>{
-          PlatformsLayer.remove(c)
-        })
+    this.platforms.getChildren().forEach(c => {
+      c.setScale(0.8).setOrigin(0).refreshBody()
+      c.body.checkCollision.down = false
+      c.body.checkCollision.left = false
+      c.body.checkCollision.right = false
+      PlatformsLayer.add(c)
+      c.on('destroy', () => {
+        PlatformsLayer.remove(c)
       })
+    })
   }
 
   addSaws() {
@@ -133,21 +144,44 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update(time, delta) {
-    UpdateList.forEach(o => o.update(time, delta))
-    if (this.scoreText.score % 10 == 0 && this.scoreText.score != 0) {
-      console.log('a')
-      //TODO RESET MAP(platforms and saws)
-    }
     if (this.player.CurrentHP == 0) {
       clearInterval(this.intervalFireball)
       clearInterval(this.intervalEnemies)
-      this.platforms.getChildren().forEach(c => c.setScale(0))
+      this.player.destroy()
+      this.platforms.getChildren().forEach(c => {
+        c.destroy()
+      })
       this.saws.forEach(c => {
+        c.destroy()
+      })
+      this.enemiesWithSword.forEach(c => {
+        c.destroy()
+      })
+      this.fireballs.forEach(c => {
+        c.destroy()
+      })
+      this.hearths.forEach(c => {
         c.destroy()
       })
       this.scene.pause()
       this.scoreText.updatePosition()
       new GameOverText(this)
+    } else {
+      UpdateList.forEach(o => o.update(time, delta))
+      if (this.scoreText.score % 10 == 0 && this.scoreText.score != 0) {
+        this.platforms.getChildren().forEach(c => {
+          c.destroy()
+        })
+        this.saws.forEach(saw => {
+          saw.destroy()
+        })
+        this.player.destroy()
+        this.addPlatforms()
+        this.addSaws()
+        this.scoreText.increaseScore()
+        console.log('a')
+        //TODO RESET MAP(platforms and saws)
+      }
     }
   }
 }

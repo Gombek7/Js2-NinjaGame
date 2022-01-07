@@ -8,7 +8,7 @@ export default class ScoreText extends Phaser.GameObjects.Text {
     UpdateList.push(this)
     this.setOrigin(0)
     this.setScrollFactor(0)
-    this.score = 0
+    this.score = 9
   }
 
   increaseScore() {
