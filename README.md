@@ -1,3 +1,19 @@
+# Js Ninja
+Projekt na przedmiot Programowanie aplikacji w języku JavaScript na 5 semestrze. Prosta gra na silniku Phaser. Cel gry to zdobycie jak największej ilości punktów poprzez pokonywanie przeciwników. Należy uważać na pułapki: piły i kule ognia. Można też je wykorzystać do eliminiacji wrogów. 
+Autorzy: [Jarosław Dakowicz](https://github.com/Gombek7), [Jędrzej Dąbrowski](https://github.com/JedrekDabrowski)
+
+## Sterowanie
+* WSAD - poruszanie się
+* Spacja - atak
+
+## Zrzuty ekranu
+![image](https://user-images.githubusercontent.com/89144111/169020535-ec538a1f-8685-46cc-aaba-44ab9545a1cb.png)
+![image](https://user-images.githubusercontent.com/89144111/169020748-8611728f-fa57-4138-8689-5ea48303c440.png)
+![image](https://user-images.githubusercontent.com/89144111/169021065-718a1e89-d09e-4e7f-854a-14b7695f7901.png)
+
+## Poniżej znajdują się infomacje z zastosowanego szablonu
+
+<hr/>
 <h1 align="center">
   <br>
   <a href="https://github.com/yandeu/phaser-project-template#readme"><img src="readme/header.png" alt="header" width="600"></a>
